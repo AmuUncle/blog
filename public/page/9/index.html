@@ -225,15 +225,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/Linuxtcpdump%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" target="_self">
-          【转载】Linuxtcpdump使用介绍
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9009/" target="_self">
+          【转载】libevent源码深度剖析09
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/Linuxtcpdump%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9009/" target="_self">
         <div>
-          Linux tcpdump 使用介绍tcpdump 是 Linux 系统提供一个非常强大的抓包工具，熟练使用它，对我们排查网络问题非常有用。如果你的机器上还没有安装，可以使用如下命令安装： 1yum install tcpdump  如果要使用 tcpdump 命令必须具有 sudo 权限。 tcpdump 常用的选项有：  -i 指定要捕获的目标网卡名，网卡名可以使用前面章节中介绍的 ifcon
+          libevent源码深度剖析09集成定时器事件 现在再来详细分析libevent中I&#x2F;O事件和Timer事件的集成，与Signal相比，Timer事件的集成会直观和简单很多。Libevent对堆的调整操作做了一些优化，本节还会描述这些优化方法。 1. 集成到事件主循环因为系统的I&#x2F;O机制像select()和epoll_wait()都允许程序制定一个最大等待时间（也称为最大超时时
         </div>
       </a>
 
@@ -272,7 +272,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
             
           </div>
         
@@ -286,15 +290,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/Linux%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%9A%84%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80/" target="_self">
-          【转载】Linux网络故障排查的瑞士军刀
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" target="_self">
+          【转载】libevent源码深度剖析10
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/Linux%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%9A%84%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" target="_self">
         <div>
-          Linux 网络故障排查的瑞士军刀nc 即 netcat 命令，这个工具在排查网络故障时非常有用，功能非常强大，因而被业绩称为网络界的“瑞士军刀”，请读者务必掌握。默认系统是没有这个命令的，你需要安装一下，安装方法： 1yum install nc  nc 命令常见的用法是模拟一个服务器程序被其他客户端连接，或者模拟一个客户端连接其他服务器，连接之后就可以进行数据收发。我们来逐一介绍一下：  模拟
+          libevent源码深度剖析10支持I&#x2F;O多路复用技术 libevent的核心是事件驱动、同步非阻塞，为了达到这一目标，必须采用系统提供的I&#x2F;O多路复用技术，而这些在Windows、Linux、Unix等不同平台上却各有不同，如何能提供优雅而统一的支持方式，是首要关键的问题，这其实不难，本节就来分析一下。 1. 统一的关键libevent支持多种I&#x2F;O多路复用技术的关
         </div>
       </a>
 
@@ -333,7 +337,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
             
           </div>
         
@@ -347,15 +355,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E4%BB%8E%E6%8A%93%E5%8C%85%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90connect%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B/" target="_self">
-          【转载】从抓包的角度分析connect函数的连接过程
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9012/" target="_self">
+          【转载】libevent源码深度剖析12
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E4%BB%8E%E6%8A%93%E5%8C%85%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90connect%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9012/" target="_self">
         <div>
-          从抓包的角度分析connect()函数的连接过程这篇文章主要是从tcp连接建立的角度来分析客户端程序如何利用connect函数和服务端程序建立tcp连接的，了解connect函数在建立连接的过程中底层协议栈做了哪些事情。 tcp三次握手在正式介绍connect函数时，我们先来看一下tcp三次握手的过程，下面这个实验是客户端通过telnet远程登录服务端的例子，telnet协议是基于tcp协议，我们
+          libevent源码深度剖析12让libevent支持多线程 libevent本身不是多线程安全的，在多核的时代，如何能充分利用CPU的能力呢，这一节来说说如何在多线程环境中使用libevent，跟源代码并没有太大的关系，纯粹是使用上的技巧。 1. 错误使用示例在多核的CPU上只使用一个线程始终是对不起CPU的处理能力啊，那好吧，那就多创建几个线程，比如下面的简单服务器场景。1 主线程创建工作线程
         </div>
       </a>
 
@@ -394,7 +402,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
             
           </div>
         
@@ -408,15 +420,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E5%81%9AJava%E6%88%96%E8%80%85C++%E5%BC%80%E5%8F%91%E9%83%BD%E5%BA%94%E8%AF%A5%E7%9F%A5%E9%81%93%E7%9A%84lsof%E5%91%BD%E4%BB%A4/" target="_self">
-          【转载】做Java或者C++开发都应该知道的lsof命令
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
+          【转载】libevent源码深度剖析13
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E5%81%9AJava%E6%88%96%E8%80%85C++%E5%BC%80%E5%8F%91%E9%83%BD%E5%BA%94%E8%AF%A5%E7%9F%A5%E9%81%93%E7%9A%84lsof%E5%91%BD%E4%BB%A4/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
         <div>
-          做 Java 或者 C++ 开发都应该知道的 lsof 命令lsof 命令是 Linux 系统的扩展工具，它的含义是 list opened filedesciptor （列出已经打开的文件描述符），在 Linux 系统中，所有的与资源句柄相关的东西都可以统一抽象成文件描述符（filedescriptor，简称 fd）。一个文件句柄是一个 fd，一个 socket 对象也可以称之为 fd 等等。
+          libevent源码深度剖析13libevent信号处理注意点 前面讲到了 libevent 实现多线程的方法，然而在多线程的环境中注册信号事件，还是有一些情况需要小心处理，那就是不能在多个 libevent 实例上注册信号事件。依然冠名追加到 libevent 系列。 以 2 个线程为例，做简单的场景分析。 1 首先是创建并初始化线程 1 的 libevent 实例 base1 ，线程 1 的
         </div>
       </a>
 
@@ -455,7 +467,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
             
           </div>
         
@@ -469,15 +485,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E5%88%A9%E7%94%A8telnet%E5%91%BD%E4%BB%A4%E5%8F%91%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6/" target="_self">
-          【转载】利用telnet命令发电子邮件
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9011/" target="_self">
+          【转载】libevent源码深度剖析11
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E5%88%A9%E7%94%A8telnet%E5%91%BD%E4%BB%A4%E5%8F%91%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9011/" target="_self">
         <div>
-          利用 telnet 命令发电子邮件telnet 命令是我们最常用的网络调试命令之一。如果你的机器上还没有安装 telnet 命令，可以使用如下命令安装一下： 1yum install telnet   如果一个服务程序对外开启了侦听服务，我们都可以使用 telnet ip port 来连接上去，例如： 1234[root@localhost ~]# telnet 120.55.94.78 8888
+          libevent源码深度剖析11时间管理 为了支持定时器，libevent必须和系统时间打交道，这一部分的内容也比较简单，主要涉及到时间的加减辅助函数、时间缓存、时间校正和定时器堆的时间值调整等。下面就结合源代码来分析一下。 1. 初始化检测libevent在初始化时会检测系统时间的类型，通过调用函数*d***etect_monotonic()完成，它通过调用clock_gettime()**来检
         </div>
       </a>
 
@@ -516,7 +532,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
             
           </div>
         
@@ -656,15 +676,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%91%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%AF%B9%E7%AB%AF%E4%B8%80%E7%9B%B4%E4%B8%8D%E6%94%B6%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" target="_self">
-          【转载】服务器端发数据时，如果对端一直不收，怎么办？
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E6%94%B6%E5%8F%91%E6%95%B0%E6%8D%AE%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/" target="_self">
+          【转载】网络通信中收发数据的正确姿势
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%91%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%AF%B9%E7%AB%AF%E4%B8%80%E7%9B%B4%E4%B8%8D%E6%94%B6%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E6%94%B6%E5%8F%91%E6%95%B0%E6%8D%AE%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/" target="_self">
         <div>
-          服务器端发数据时，如果对端一直不收，怎么办？这类问题一般出现在跨部门尤其是与外部开发人员合作的时候。假设现在有这样一种情况，我们的服务器提供对外的服务，指定好了协议，然后对外提供服务，客户端由外部人员去开发，由于存在太多的不确定性，如果我们在给对端（客户端）发送数据时，对端因为一些问题（可能是逻辑 bug 或者其他的一些问题）一直不从 socket 系统缓冲区中收取数据，而服务器端可能定期产生一些
+          网络通信中收发数据的正确姿势在网络通信中，我们可能既要通过 socket 去发送数据也要通过 socket 来收取数据。那么一般的网络通信框架是如何收发数据的呢？注意，这里讨论的范围是基于各种 IO 复用函数（select、poll、epoll 等）来判断 socket 读写来收发数据，其他情形比较简单，这里就不提了。 我们这里以服务器端为例。服务器端接受客户端连接后，产生一个与客户端连接对应的
         </div>
       </a>
 
@@ -719,15 +739,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E6%94%B6%E5%8F%91%E6%95%B0%E6%8D%AE%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/" target="_self">
-          【转载】网络通信中收发数据的正确姿势
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%91%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%AF%B9%E7%AB%AF%E4%B8%80%E7%9B%B4%E4%B8%8D%E6%94%B6%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" target="_self">
+          【转载】服务器端发数据时，如果对端一直不收，怎么办？
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1%E4%B8%AD%E6%94%B6%E5%8F%91%E6%95%B0%E6%8D%AE%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%91%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%AF%B9%E7%AB%AF%E4%B8%80%E7%9B%B4%E4%B8%8D%E6%94%B6%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" target="_self">
         <div>
-          网络通信中收发数据的正确姿势在网络通信中，我们可能既要通过 socket 去发送数据也要通过 socket 来收取数据。那么一般的网络通信框架是如何收发数据的呢？注意，这里讨论的范围是基于各种 IO 复用函数（select、poll、epoll 等）来判断 socket 读写来收发数据，其他情形比较简单，这里就不提了。 我们这里以服务器端为例。服务器端接受客户端连接后，产生一个与客户端连接对应的
+          服务器端发数据时，如果对端一直不收，怎么办？这类问题一般出现在跨部门尤其是与外部开发人员合作的时候。假设现在有这样一种情况，我们的服务器提供对外的服务，指定好了协议，然后对外提供服务，客户端由外部人员去开发，由于存在太多的不确定性，如果我们在给对端（客户端）发送数据时，对端因为一些问题（可能是逻辑 bug 或者其他的一些问题）一直不从 socket 系统缓冲区中收取数据，而服务器端可能定期产生一些
         </div>
       </a>
 
