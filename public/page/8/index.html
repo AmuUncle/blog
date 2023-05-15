@@ -810,15 +810,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/Linux%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%9A%84%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80/" target="_self">
-          【转载】Linux网络故障排查的瑞士军刀
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
+          【转载】libevent源码深度剖析13
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/Linux%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%9A%84%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
         <div>
-          Linux 网络故障排查的瑞士军刀nc 即 netcat 命令，这个工具在排查网络故障时非常有用，功能非常强大，因而被业绩称为网络界的“瑞士军刀”，请读者务必掌握。默认系统是没有这个命令的，你需要安装一下，安装方法： 1yum install nc  nc 命令常见的用法是模拟一个服务器程序被其他客户端连接，或者模拟一个客户端连接其他服务器，连接之后就可以进行数据收发。我们来逐一介绍一下：  模拟
+          libevent源码深度剖析13libevent信号处理注意点 前面讲到了 libevent 实现多线程的方法，然而在多线程的环境中注册信号事件，还是有一些情况需要小心处理，那就是不能在多个 libevent 实例上注册信号事件。依然冠名追加到 libevent 系列。 以 2 个线程为例，做简单的场景分析。 1 首先是创建并初始化线程 1 的 libevent 实例 base1 ，线程 1 的
         </div>
       </a>
 
@@ -857,7 +857,11 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
             
           </div>
         
