@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/amudashu.png">
+  <link rel="icon" href="/blog/img/amudashu.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="阿木大叔">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Windows编程基础–第4节 MFC消息映射机制对于MFC程序最重要的响应机制就是消息映射机制，这节我们就来一起尝试一下MFC的消息映射机制。（操作系统：win10 64位 IDE：vc++ 6.0）1、新建一个MFC对话框项目，参见上节，2、编译代码运行，效果图如下：3、现在我们删除对话框上的《确定》和《取消》按钮，如图：4、现在我们添加自己的“OK”和“CANCEL”按钮，接下来我们就来看看">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第4节 MFC消息映射机制">
+<meta property="og:url" content="https://hudejie.gitee.io/blog/2017/10/28/%E7%AC%AC4%E8%8A%82-MFC%E6%B6%88%E6%81%AF%E6%98%A0%E5%B0%84%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="阿木大叔的博客">
+<meta property="og:description" content="Windows编程基础–第4节 MFC消息映射机制对于MFC程序最重要的响应机制就是消息映射机制，这节我们就来一起尝试一下MFC的消息映射机制。（操作系统：win10 64位 IDE：vc++ 6.0）1、新建一个MFC对话框项目，参见上节，2、编译代码运行，效果图如下：3、现在我们删除对话框上的《确定》和《取消》按钮，如图：4、现在我们添加自己的“OK”和“CANCEL”按钮，接下来我们就来看看">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020220853804?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020221041426?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020221432827?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020222144280?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020223001512?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020223015497?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020224733563?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020225549041?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020225556702?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020225608346?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://img.blog.csdn.net/20171020232524462?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="article:published_time" content="2017-10-28T15:30:28.000Z">
+<meta property="article:modified_time" content="2023-05-15T02:13:49.059Z">
+<meta property="article:author" content="阿木大叔">
+<meta property="article:tag" content="MFC">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20171020220853804?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>第4节 MFC消息映射机制 - 阿木大叔的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hudejie.gitee.io","root":"/blog/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blog/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>阿木大叔-博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="第4节 MFC消息映射机制"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2017-10-28 23:30" pubdate>
+          2017年10月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">第4节 MFC消息映射机制</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：4 小时前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Windows编程基础–第4节-MFC消息映射机制"><a href="#Windows编程基础–第4节-MFC消息映射机制" class="headerlink" title="Windows编程基础–第4节 MFC消息映射机制"></a>Windows编程基础–第4节 MFC消息映射机制</h1><p>对于MFC程序最重要的响应机制就是消息映射机制，这节我们就来一起尝试一下MFC的消息映射机制。<br>（操作系统：win10 64位 IDE：vc++ 6.0）<br>1、新建一个MFC对话框项目，参见上节，<br>2、编译代码运行，效果图如下：<br><img src="http://img.blog.csdn.net/20171020220853804?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br>3、现在我们删除对话框上的《确定》和《取消》按钮，如图：<br><img src="http://img.blog.csdn.net/20171020221041426?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br>4、现在我们添加自己的“OK”和“CANCEL”按钮，接下来我们就来看看“OK”按钮的按下消息是怎么进行处理的？<br><img src="http://img.blog.csdn.net/20171020221432827?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br>4、执行View-&gt;Class Wizard,打开类向导；（或者直接用ctrl + W）</p>
+<p>此时就能看到我们创建的对话框，OK按钮，CANCEL按钮对象，点击它们可以看见它们分别的拥有的消息，如图：</p>
+<p><img src="http://img.blog.csdn.net/20171020222144280?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br>5、我们选择Cday03Dlg，MESSAGES选择WM_MOUSEMOVE消息，点击Add Function，下部Member function就会出现与WM_MOUSEMOVE对应的OnMouseMove函数，接下来点击Edit Code，编辑OnMouseMove函数的内容：<br><img src="http://img.blog.csdn.net/20171020223001512?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br><img src="http://img.blog.csdn.net/20171020223015497?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br>6、我们来修改OnMouseMove(UINT nFlags, CPoint point) 函数，参数中point为鼠标的坐标位置，我们可以通过point.x, point.y来获取鼠标的位置，nFlags主要是标志一些控制键是否按下，然后MK_LBUTTON、MK_RBUTTON、MK_CONTROL、MK_SHIFT、MK_MBUTTON 分别对应鼠标左键，右键，CTRL ，SHIFT ，鼠标中间（转轮）：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CDay03Dlg::OnMouseMove</span><span class="hljs-params">(UINT nFlags, CPoint point)</span> </span><br><span class="hljs-function"></span>&#123;<br>	<span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> Add your message handler code here and/or call default</span><br>	CString strText;<br>	strText.<span class="hljs-built_in">Format</span>(<span class="hljs-string">&quot;坐标 x = %d ,y = %d &quot;</span>,point.x, point.y);<br><br>	<span class="hljs-keyword">if</span> (nFlags &amp; MK_LBUTTON)<br>	&#123;<br>		strText += <span class="hljs-string">&quot; 鼠标左键DOWN&quot;</span>;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (nFlags &amp; MK_RBUTTON)<br>	&#123;<br>		strText += <span class="hljs-string">&quot; 鼠标右键DOWN&quot;</span>;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (nFlags &amp; MK_CONTROL)<br>	&#123;<br>		strText += <span class="hljs-string">&quot; CTRL DOWN&quot;</span>;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (nFlags &amp; MK_SHIFT)<br>	&#123;<br>		strText += <span class="hljs-string">&quot; SHIFT DOWN&quot;</span>;<br>	&#125;<br>	<span class="hljs-keyword">if</span> (nFlags &amp; MK_MBUTTON)<br>	&#123;<br>		strText += <span class="hljs-string">&quot; MIDBUTTON DOWN&quot;</span>;<br>	&#125;<br>	<span class="hljs-built_in">SetWindowText</span>(strText);  <span class="hljs-comment">// 设置对话框标题文本</span><br><br>	CDialog::<span class="hljs-built_in">OnMouseMove</span>(nFlags, point);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>效果图：<br><img src="http://img.blog.csdn.net/20171020224733563?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p>7、同样，我们可以通过类向导分别设置“OK”，“CANCEL”按钮的消息触发函数；<br><img src="http://img.blog.csdn.net/20171020225549041?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br><img src="http://img.blog.csdn.net/20171020225556702?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"><br><img src="http://img.blog.csdn.net/20171020225608346?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p>8、这是我们其实可以看到在day03Dlg.cpp中MESSAGE_MAP总下方就有我们新增的三个MFC消息，并且可以直观的看出是属于哪个控件ID的；</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs handlebars"><span class="language-xml">BEGIN_MESSAGE_MAP(CDay03Dlg, CDialog)</span><br><span class="language-xml">	//</span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">AFX_MSG_MAP</span>(<span class="hljs-name">CDay03Dlg</span>)</span><br><span class="hljs-template-variable">	ON_WM_SYSCOMMAND()</span><br><span class="hljs-template-variable">	ON_WM_PAINT()</span><br><span class="hljs-template-variable">	ON_WM_QUERYDRAGICON()</span><br><span class="hljs-template-variable">	ON_WM_MOUSEMOVE()</span><br><span class="hljs-template-variable">	ON_BN_CLICKED(<span class="hljs-name">IDC_BUTTON_OK</span>, OnButtonOk)</span><br><span class="hljs-template-variable">	ON_BN_CLICKED(<span class="hljs-name">IDC_BUTTON_CACEL</span>, OnButtonCacel)</span><br><span class="hljs-template-variable">	//&#125;&#125;</span><span class="language-xml">AFX_MSG_MAP</span><br><span class="language-xml">END_MESSAGE_MAP()</span><br></code></pre></td></tr></table></figure>
+<p>9、接下来我们切换到day03Dlg.h头文件中，所有afx_msg 开头的都是消息对应的处理函数：</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs handlebars"><span class="language-xml">// Generated message map functions</span><br><span class="language-xml">//</span><span class="hljs-template-variable">&#123;&#123;<span class="hljs-name">AFX_MSG</span>(<span class="hljs-name">CDay03Dlg</span>)</span><br><span class="hljs-template-variable">afx_msg void OnSysCommand(<span class="hljs-name">UINT</span> nID, LPARAM lParam);</span><br><span class="hljs-template-variable">afx_msg void OnPaint();</span><br><span class="hljs-template-variable">afx_msg HCURSOR OnQueryDragIcon();</span><br><span class="hljs-template-variable">afx_msg void OnMouseMove(<span class="hljs-name">UINT</span> nFlags, CPoint point);</span><br><span class="hljs-template-variable">afx_msg void OnButtonOk();</span><br><span class="hljs-template-variable">afx_msg void OnDoubleclickedButtonCacel();</span><br><span class="hljs-template-variable">afx_msg void OnButtonCacel();</span><br><span class="hljs-template-variable">//&#125;&#125;</span><span class="language-xml">AFX_MSG</span><br><span class="language-xml">DECLARE_MESSAGE_MAP()</span><br></code></pre></td></tr></table></figure>
+<p>10、由以上例子可以看出，MFC程序的消息映射机制是创建一个与窗口相关联的派生类，用于消息关联的成员函数来接收和处理窗口的消息。在类向导中选择对应的消息，添加与该消息关联的成员函数来处理该消息，这就是MFC的消息映射机制。具体控件或窗口支持哪些消息及消息对应的函数参数等，请参见MSDN；<br>11、最终效果图：<br><img src="http://img.blog.csdn.net/20171020232524462?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcXFfMjU1NDkzMDk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" srcset="/blog/img/loading.gif" lazyload alt="这里写图片描述"></p>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/AmuUncle/MFC_CSDN.git" title="项目源码可以访问我的码云来fork">项目源码可以访问我的码云来fork</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/MFC%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E6%94%BE%E5%BC%83/" class="category-chain-item">MFC从入门到放弃</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/MFC/">#MFC</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>第4节 MFC消息映射机制</div>
+      <div>https://hudejie.gitee.io/blog/2017/10/28/第4节-MFC消息映射机制/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>阿木大叔</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2017年10月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2017/10/28/%E7%AC%AC5%E8%8A%82-MFC%E5%AF%B9%E8%AF%9D%E6%A1%86%E7%A8%8B%E5%BA%8F/" title="第5节 MFC对话框程序">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第5节 MFC对话框程序</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2017/10/28/%E7%AC%AC3%E8%8A%82-%E5%88%9D%E6%8E%A2MFC/" title="第3节 初探MFC">
+                        <span class="hidden-mobile">第3节 初探MFC</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://gitee.com/hudejie" target="_blank" rel="nofollow noopener"><span>Gitee</span></a> <i class="iconfont icon-love"></i> <a href="https://blog.csdn.net/qq_25549309?type=blog" target="_blank" rel="nofollow noopener"><span>CSDN</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

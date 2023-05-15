@@ -1,0 +1,731 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/amudashu.png">
+  <link rel="icon" href="/blog/img/amudashu.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="阿木大叔">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="非阻塞模式下 send 和 recv 函数的返回值我们来总结一下 send 和 recv 函数的各种返回值意义：    返回值 n 返回值含义    大于 0 成功发送 n 个字节   0 对端关闭连接   小于 0（ -1） 出错或者被信号中断或者对端 TCP 窗口太小数据发不出去（send）或者当前网卡缓冲区已无数据可收（recv）   我们来逐一介绍下这三种情况：  返回值大于 0 对于 s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转载】非阻塞模式下send和recv函数的返回值">
+<meta property="og:url" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/index.html">
+<meta property="og:site_name" content="阿木大叔的博客">
+<meta property="og:description" content="非阻塞模式下 send 和 recv 函数的返回值我们来总结一下 send 和 recv 函数的各种返回值意义：    返回值 n 返回值含义    大于 0 成功发送 n 个字节   0 对端关闭连接   小于 0（ -1） 出错或者被信号中断或者对端 TCP 窗口太小数据发不出去（send）或者当前网卡缓冲区已无数据可收（recv）   我们来逐一介绍下这三种情况：  返回值大于 0 对于 s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/sendrecvreturnvalue1.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/sendrecvreturnvalue2.png">
+<meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
+<meta property="article:modified_time" content="2023-05-13T07:22:36.849Z">
+<meta property="article:author" content="阿木大叔">
+<meta property="article:tag" content="学习资料">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io/imgs/sendrecvreturnvalue1.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【转载】非阻塞模式下send和recv函数的返回值 - 阿木大叔的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hudejie.gitee.io","root":"/blog/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blog/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>阿木大叔-博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【转载】非阻塞模式下send和recv函数的返回值"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-05-06 17:27" pubdate>
+          2021年5月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          59 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">【转载】非阻塞模式下send和recv函数的返回值</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="非阻塞模式下-send-和-recv-函数的返回值"><a href="#非阻塞模式下-send-和-recv-函数的返回值" class="headerlink" title="非阻塞模式下 send 和 recv 函数的返回值"></a>非阻塞模式下 send 和 recv 函数的返回值</h2><p>我们来总结一下 <strong>send</strong> 和 <strong>recv</strong> 函数的各种返回值意义：</p>
+<table>
+<thead>
+<tr>
+<th align="center">返回值 n</th>
+<th align="center">返回值含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">大于 0</td>
+<td align="center">成功发送 n 个字节</td>
+</tr>
+<tr>
+<td align="center">0</td>
+<td align="center">对端关闭连接</td>
+</tr>
+<tr>
+<td align="center">小于 0（ -1）</td>
+<td align="center">出错或者被信号中断或者对端 TCP 窗口太小数据发不出去（send）或者当前网卡缓冲区已无数据可收（recv）</td>
+</tr>
+</tbody></table>
+<p>我们来逐一介绍下这三种情况：</p>
+<ul>
+<li><p><strong>返回值大于 0</strong></p>
+<p>对于 <strong>send</strong> 和 <strong>recv</strong> 函数返回值大于 <strong>0</strong>，表示发送或接收多少字节，需要注意的是，在这种情形下，我们一定要判断下 send 函数的返回值是不是我们期望发送的缓冲区长度，而不是简单判断其返回值大于 0。举个例子：</p>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-number">1</span><span class="hljs-keyword">int</span> n = send(socket, buf, buf_length, <span class="hljs-number">0</span>)；<br><span class="hljs-number">2</span><span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">0</span>)<br><span class="hljs-number">3</span>&#123;<br><span class="hljs-symbol">4 </span> printf(<span class="hljs-string">&quot;send data successfully\n&quot;</span>);<br><span class="hljs-number">5</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>很多新手会写出上述代码，虽然返回值 n 大于 0，但是实际情形下，由于对端的 TCP 窗口可能因为缺少一部分字节就满了，所以返回值 n 的值可能在 (0, buf_length] 之间，当 0 &lt; n &lt; buf_length 时，虽然此时 send 函数是调用成功了，但是业务上并不算正确，因为有部分数据并没发出去。你可能在一次测试中测不出 n 不等于 buf_length 的情况，但是不代表实际中不存在。所以，建议要么认为返回值 n 等于 buf_length 才认为正确，要么在一个循环中调用 send 函数，如果数据一次性发不完，记录偏移量，下一次从偏移量处接着发，直到全部发送完为止。</p>
+</li>
+</ul>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">1 </span> //推荐的方式一<br><span class="hljs-symbol">2 </span> <span class="hljs-keyword">int</span> n = send(socket, buf, buf_length, <span class="hljs-number">0</span>)；<br><span class="hljs-symbol">3 </span> <span class="hljs-keyword">if</span> (n == buf_length)<br><span class="hljs-symbol">4 </span> &#123;<br><span class="hljs-symbol">5 </span>     printf(<span class="hljs-string">&quot;send data successfully\n&quot;</span>);<br><span class="hljs-symbol">6 </span> &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs kotlin"> <span class="hljs-number">1</span><span class="hljs-comment">//推荐的方式二：在一个循环里面根据偏移量发送数据</span><br> 2bool SendData(<span class="hljs-keyword">const</span> char* buf , int buf_length)<br> <span class="hljs-number">3</span>&#123;<br> <span class="hljs-number">4</span>    <span class="hljs-comment">//已发送的字节数目</span><br> <span class="hljs-number">5</span>    int sent_bytes = <span class="hljs-number">0</span>;<br> <span class="hljs-number">6</span>    int ret = <span class="hljs-number">0</span>;<br> <span class="hljs-number">7</span>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)<br> <span class="hljs-number">8</span>    &#123;<br> <span class="hljs-number">9</span>        ret = send(m_hSocket, buf + sent_bytes, buf_length - sent_bytes, <span class="hljs-number">0</span>);<br><span class="hljs-number">10</span>        <span class="hljs-keyword">if</span> (nRet == -<span class="hljs-number">1</span>)<br><span class="hljs-number">11</span>        &#123;<br><span class="hljs-number">12</span>            <span class="hljs-keyword">if</span> (errno == EWOULDBLOCK)<br><span class="hljs-number">13</span>            &#123;<br><span class="hljs-number">14</span>                <span class="hljs-comment">//严谨的做法，这里如果发不出去，应该缓存尚未发出去的数据，后面介绍</span><br><span class="hljs-number">15</span>                <span class="hljs-keyword">break</span>;<br><span class="hljs-number">16</span>            &#125;             <br><span class="hljs-number">17</span>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (errno == EINTR)<br><span class="hljs-number">18</span>                <span class="hljs-keyword">continue</span>;<br><span class="hljs-number">19</span>            <span class="hljs-keyword">else</span><br><span class="hljs-number">20</span>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br><span class="hljs-number">21</span>        &#125;<br><span class="hljs-number">22</span>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (nRet == <span class="hljs-number">0</span>)<br><span class="hljs-number">23</span>        &#123;<br><span class="hljs-number">24</span>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br><span class="hljs-number">25</span>        &#125;<br><span class="hljs-number">26</span><br><span class="hljs-number">27</span>        sent_bytes += ret;<br><span class="hljs-number">28</span>        <span class="hljs-keyword">if</span> (sent_bytes == buf_length)<br><span class="hljs-number">29</span>            <span class="hljs-keyword">break</span>;<br><span class="hljs-number">30</span><br><span class="hljs-number">31</span>        <span class="hljs-comment">//稍稍降低 CPU 的使用率</span><br><span class="hljs-number">32</span>        usleep(<span class="hljs-number">1</span>);<br><span class="hljs-number">33</span>    &#125;<br><span class="hljs-number">34</span><br><span class="hljs-number">35</span>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br><span class="hljs-number">36</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>返回值等于 0</strong></p>
+<p>通常情况下，如果 <strong>send</strong> 或者 <strong>recv</strong> 函数返回 <strong>0</strong>，我们就认为对端关闭了连接，我们这端也关闭连接即可，这是实际开发时最常见的处理逻辑。</p>
+<p>但是，现在还有一种情形就是，假设调用 <strong>send</strong> 函数传递的数据长度就是 0 呢？<strong>send</strong> 函数会是什么行为？对端会 <strong>recv</strong> 到一个 0 字节的数据吗？需要强调的是，<strong>在实际开发中，你不应该让你的程序有任何机会去 send 0 字节的数据，这是一种不好的做法。</strong> 这里仅仅用于实验性讨论，我们来通过一个例子，来看下 <strong>send</strong> 一个长度为 <strong>0</strong> 的数据，<strong>send</strong> 函数的返回值是什么？对端会 <strong>recv</strong> 到 <strong>0</strong> 字节的数据吗？</p>
+<p><strong>server</strong> 端代码：</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><code class="hljs cpp"> <span class="hljs-number">1</span>  <span class="hljs-comment">/**</span><br><span class="hljs-comment"> 2   * 验证recv函数接受0字节的行为，server端，server_recv_zero_bytes.cpp</span><br><span class="hljs-comment"> 3   * zhangyl 2018.12.17</span><br><span class="hljs-comment"> 4   */</span><br> <span class="hljs-number">5</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span> </span><br> <span class="hljs-number">6</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br> <span class="hljs-number">7</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br> <span class="hljs-number">8</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br> <span class="hljs-number">9</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-number">10</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-number">11</span>  <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><span class="hljs-number">12</span><br><span class="hljs-number">13</span>  <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>* argv[])</span></span><br><span class="hljs-function">14  </span>&#123;<br><span class="hljs-number">15</span>      <span class="hljs-comment">//1.创建一个侦听socket</span><br><span class="hljs-number">16</span>      <span class="hljs-type">int</span> listenfd = <span class="hljs-built_in">socket</span>(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br><span class="hljs-number">17</span>      <span class="hljs-keyword">if</span> (listenfd == <span class="hljs-number">-1</span>)<br><span class="hljs-number">18</span>      &#123;<br><span class="hljs-number">19</span>          std::cout &lt;&lt; <span class="hljs-string">&quot;create listen socket error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">20</span>          <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br><span class="hljs-number">21</span>      &#125;<br><span class="hljs-number">22</span><br><span class="hljs-number">23</span>      <span class="hljs-comment">//2.初始化服务器地址</span><br><span class="hljs-number">24</span>      <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> bindaddr;<br><span class="hljs-number">25</span>      bindaddr.sin_family = AF_INET;<br><span class="hljs-number">26</span>      bindaddr.sin_addr.s_addr = <span class="hljs-built_in">htonl</span>(INADDR_ANY);<br><span class="hljs-number">27</span>      bindaddr.sin_port = <span class="hljs-built_in">htons</span>(<span class="hljs-number">3000</span>);<br><span class="hljs-number">28</span>      <span class="hljs-keyword">if</span> (<span class="hljs-built_in">bind</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr *)&amp;bindaddr, <span class="hljs-built_in">sizeof</span>(bindaddr)) == <span class="hljs-number">-1</span>)<br><span class="hljs-number">29</span>      &#123;<br><span class="hljs-number">30</span>          std::cout &lt;&lt; <span class="hljs-string">&quot;bind listen socket error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">31</span>          <span class="hljs-built_in">close</span>(listenfd);<br><span class="hljs-number">32</span>          <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br><span class="hljs-number">33</span>      &#125;<br><span class="hljs-number">34</span><br><span class="hljs-number">35</span>      <span class="hljs-comment">//3.启动侦听</span><br><span class="hljs-number">36</span>      <span class="hljs-keyword">if</span> (<span class="hljs-built_in">listen</span>(listenfd, SOMAXCONN) == <span class="hljs-number">-1</span>)<br><span class="hljs-number">37</span>      &#123;<br><span class="hljs-number">38</span>          std::cout &lt;&lt; <span class="hljs-string">&quot;listen error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">39</span>          <span class="hljs-built_in">close</span>(listenfd);<br><span class="hljs-number">40</span>          <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br><span class="hljs-number">41</span>      &#125;<br><span class="hljs-number">42</span><br><span class="hljs-number">43</span>      <span class="hljs-type">int</span> clientfd;<br><span class="hljs-number">44</span><br><span class="hljs-number">45</span>      <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> clientaddr;<br><span class="hljs-number">46</span>      <span class="hljs-type">socklen_t</span> clientaddrlen = <span class="hljs-built_in">sizeof</span>(clientaddr);<br><span class="hljs-number">47</span>      <span class="hljs-comment">//4. 接受客户端连接</span><br><span class="hljs-number">48</span>      clientfd = <span class="hljs-built_in">accept</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr *)&amp;clientaddr, &amp;clientaddrlen);<br><span class="hljs-number">49</span>      <span class="hljs-keyword">if</span> (clientfd != <span class="hljs-number">-1</span>)<br><span class="hljs-number">50</span>      &#123;           <br><span class="hljs-number">51</span>          <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)<br><span class="hljs-number">52</span>          &#123;<br><span class="hljs-number">53</span>              <span class="hljs-type">char</span> recvBuf[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br><span class="hljs-number">54</span>              <span class="hljs-comment">//5. 从客户端接受数据,客户端没有数据来的时候会在recv函数处阻塞</span><br><span class="hljs-number">55</span>              <span class="hljs-type">int</span> ret = <span class="hljs-built_in">recv</span>(clientfd, recvBuf, <span class="hljs-number">32</span>, <span class="hljs-number">0</span>);<br><span class="hljs-number">56</span>              <span class="hljs-keyword">if</span> (ret &gt; <span class="hljs-number">0</span>) <br><span class="hljs-number">57</span>              &#123;<br><span class="hljs-number">58</span>                  std::cout &lt;&lt; <span class="hljs-string">&quot;recv data from client, data: &quot;</span> &lt;&lt; recvBuf &lt;&lt; std::endl;               <br><span class="hljs-number">59</span>              &#125; <br><span class="hljs-number">60</span>              <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ret == <span class="hljs-number">0</span>)<br><span class="hljs-number">61</span>              &#123;<br><span class="hljs-number">62</span>                  std::cout &lt;&lt; <span class="hljs-string">&quot;recv 0 byte data.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">63</span>                  <span class="hljs-keyword">continue</span>;<br><span class="hljs-number">64</span>              &#125; <br><span class="hljs-number">65</span>              <span class="hljs-keyword">else</span><br><span class="hljs-number">66</span>              &#123;<br><span class="hljs-number">67</span>                  <span class="hljs-comment">//出错</span><br><span class="hljs-number">68</span>                  std::cout &lt;&lt; <span class="hljs-string">&quot;recv data error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">69</span>                  <span class="hljs-keyword">break</span>;<br><span class="hljs-number">70</span>              &#125;<br><span class="hljs-number">71</span>          &#125;               <br><span class="hljs-number">72</span>      &#125;<br><span class="hljs-number">73</span><br><span class="hljs-number">74</span><br><span class="hljs-number">75</span>      <span class="hljs-comment">//关闭客户端socket</span><br><span class="hljs-number">76</span>      <span class="hljs-built_in">close</span>(clientfd);<br><span class="hljs-number">77</span>      <span class="hljs-comment">//7.关闭侦听socket</span><br><span class="hljs-number">78</span>      <span class="hljs-built_in">close</span>(listenfd);<br><span class="hljs-number">79</span><br><span class="hljs-number">80</span>      <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-number">81</span>  &#125;<br></code></pre></td></tr></table></figure>
+
+<p>上述代码侦听端口号是 <strong>3000</strong>，代码 <strong>55</strong> 行调用了 <strong>recv</strong> 函数，如果客户端一直没有数据，程序会阻塞在这里。</p>
+<p><strong>client</strong> 端代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><code class="hljs cpp"> <span class="hljs-number">1</span><span class="hljs-comment">/**</span><br><span class="hljs-comment"> 2 * 验证非阻塞模式下send函数发送0字节的行为，client端，nonblocking_client_send_zero_bytes.cpp</span><br><span class="hljs-comment"> 3 * zhangyl 2018.12.17</span><br><span class="hljs-comment"> 4 */</span><br> <span class="hljs-number">5</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span> </span><br> <span class="hljs-number">6</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br> <span class="hljs-number">7</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br> <span class="hljs-number">8</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br> <span class="hljs-number">9</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-number">10</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-number">11</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-number">12</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-number">13</span><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;errno.h&gt;</span></span><br><span class="hljs-number">14</span><br><span class="hljs-number">15</span><span class="hljs-meta">#<span class="hljs-keyword">define</span> SERVER_ADDRESS <span class="hljs-string">&quot;127.0.0.1&quot;</span></span><br><span class="hljs-number">16</span><span class="hljs-meta">#<span class="hljs-keyword">define</span> SERVER_PORT     3000</span><br><span class="hljs-number">17</span><span class="hljs-meta">#<span class="hljs-keyword">define</span> SEND_DATA       <span class="hljs-string">&quot;&quot;</span></span><br><span class="hljs-number">18</span><br><span class="hljs-number">19</span><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span>* argv[])</span></span><br><span class="hljs-function">20</span>&#123;<br><span class="hljs-number">21</span>    <span class="hljs-comment">//1.创建一个socket</span><br><span class="hljs-number">22</span>    <span class="hljs-type">int</span> clientfd = <span class="hljs-built_in">socket</span>(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br><span class="hljs-number">23</span>    <span class="hljs-keyword">if</span> (clientfd == <span class="hljs-number">-1</span>)<br><span class="hljs-number">24</span>    &#123;<br><span class="hljs-number">25</span>        std::cout &lt;&lt; <span class="hljs-string">&quot;create client socket error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">26</span>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br><span class="hljs-number">27</span>    &#125;<br><span class="hljs-number">28</span><br><span class="hljs-number">29</span>    <span class="hljs-comment">//2.连接服务器</span><br><span class="hljs-number">30</span>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> serveraddr;<br><span class="hljs-number">31</span>    serveraddr.sin_family = AF_INET;<br><span class="hljs-number">32</span>    serveraddr.sin_addr.s_addr = <span class="hljs-built_in">inet_addr</span>(SERVER_ADDRESS);<br><span class="hljs-number">33</span>    serveraddr.sin_port = <span class="hljs-built_in">htons</span>(SERVER_PORT);<br><span class="hljs-number">34</span>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">connect</span>(clientfd, (<span class="hljs-keyword">struct</span> sockaddr *)&amp;serveraddr, <span class="hljs-built_in">sizeof</span>(serveraddr)) == <span class="hljs-number">-1</span>)<br><span class="hljs-number">35</span>    &#123;<br><span class="hljs-number">36</span>        std::cout &lt;&lt; <span class="hljs-string">&quot;connect socket error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">37</span>        <span class="hljs-built_in">close</span>(clientfd);<br><span class="hljs-number">38</span>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br><span class="hljs-number">39</span>    &#125;<br><span class="hljs-number">40</span><br><span class="hljs-number">41</span>    <span class="hljs-comment">//连接成功以后，我们再将 clientfd 设置成非阻塞模式，</span><br><span class="hljs-number">42</span>    <span class="hljs-comment">//不能在创建时就设置，这样会影响到 connect 函数的行为</span><br><span class="hljs-number">43</span>    <span class="hljs-type">int</span> oldSocketFlag = <span class="hljs-built_in">fcntl</span>(clientfd, F_GETFL, <span class="hljs-number">0</span>);<br><span class="hljs-number">44</span>    <span class="hljs-type">int</span> newSocketFlag = oldSocketFlag | O_NONBLOCK;<br><span class="hljs-number">45</span>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">fcntl</span>(clientfd, F_SETFL,  newSocketFlag) == <span class="hljs-number">-1</span>)<br><span class="hljs-number">46</span>    &#123;<br><span class="hljs-number">47</span>        <span class="hljs-built_in">close</span>(clientfd);<br><span class="hljs-number">48</span>        std::cout &lt;&lt; <span class="hljs-string">&quot;set socket to nonblock error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">49</span>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br><span class="hljs-number">50</span>    &#125;<br><span class="hljs-number">51</span><br><span class="hljs-number">52</span>    <span class="hljs-comment">//3. 不断向服务器发送数据，或者出错退出</span><br><span class="hljs-number">53</span>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br><span class="hljs-number">54</span>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)<br><span class="hljs-number">55</span>    &#123;<br><span class="hljs-number">56</span>        <span class="hljs-comment">//发送 0 字节的数据</span><br><span class="hljs-number">57</span>        <span class="hljs-type">int</span> ret = <span class="hljs-built_in">send</span>(clientfd, SEND_DATA, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br><span class="hljs-number">58</span>        <span class="hljs-keyword">if</span> (ret == <span class="hljs-number">-1</span>) <br><span class="hljs-number">59</span>        &#123;<br><span class="hljs-number">60</span>            <span class="hljs-comment">//非阻塞模式下send函数由于TCP窗口太小发不出去数据，错误码是EWOULDBLOCK</span><br><span class="hljs-number">61</span>            <span class="hljs-keyword">if</span> (errno == EWOULDBLOCK)<br><span class="hljs-number">62</span>            &#123;<br><span class="hljs-number">63</span>                std::cout &lt;&lt; <span class="hljs-string">&quot;send data error as TCP Window size is too small.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">64</span>                <span class="hljs-keyword">continue</span>;<br><span class="hljs-number">65</span>            &#125; <br><span class="hljs-number">66</span>            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (errno == EINTR)<br><span class="hljs-number">67</span>            &#123;<br><span class="hljs-number">68</span>                <span class="hljs-comment">//如果被信号中断，我们继续重试</span><br><span class="hljs-number">69</span>                std::cout &lt;&lt; <span class="hljs-string">&quot;sending data interrupted by signal.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">70</span>                <span class="hljs-keyword">continue</span>;<br><span class="hljs-number">71</span>            &#125; <br><span class="hljs-number">72</span>            <span class="hljs-keyword">else</span> <br><span class="hljs-number">73</span>            &#123;<br><span class="hljs-number">74</span>                std::cout &lt;&lt; <span class="hljs-string">&quot;send data error.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">75</span>                <span class="hljs-keyword">break</span>;<br><span class="hljs-number">76</span>            &#125;<br><span class="hljs-number">77</span>        &#125;<br><span class="hljs-number">78</span>        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ret == <span class="hljs-number">0</span>)<br><span class="hljs-number">79</span>        &#123;<br><span class="hljs-number">80</span>            <span class="hljs-comment">//对端关闭了连接，我们也关闭</span><br><span class="hljs-number">81</span>            std::cout &lt;&lt; <span class="hljs-string">&quot;send 0 byte data.&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-number">82</span>        &#125; <br><span class="hljs-number">83</span>        <span class="hljs-keyword">else</span><br><span class="hljs-number">84</span>        &#123;<br><span class="hljs-number">85</span>            count ++;<br><span class="hljs-number">86</span>            std::cout &lt;&lt; <span class="hljs-string">&quot;send data successfully, count = &quot;</span> &lt;&lt; count &lt;&lt; std::endl;<br><span class="hljs-number">87</span>        &#125;<br><span class="hljs-number">88</span><br><span class="hljs-number">89</span>        <span class="hljs-comment">//每三秒发一次</span><br><span class="hljs-number">90</span>        <span class="hljs-built_in">sleep</span>(<span class="hljs-number">3</span>);<br><span class="hljs-number">91</span>    &#125;<br><span class="hljs-number">92</span><br><span class="hljs-number">93</span>    <span class="hljs-comment">//5. 关闭socket</span><br><span class="hljs-number">94</span>    <span class="hljs-built_in">close</span>(clientfd);<br><span class="hljs-number">95</span><br><span class="hljs-number">96</span>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-number">97</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>client</strong> 端连接服务器成功以后，每隔 3 秒调用 <strong>send</strong> 一次发送一个 0 字节的数据。除了先启动 <strong>server</strong> 以外，我们使用 tcpdump 抓一下经过端口 <strong>3000</strong> 上的数据包，使用如下命令：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-number">1</span>tcpdump -i any &#x27;tcp port <span class="hljs-number">3000</span>&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>然后启动 <strong>client</strong> ，我们看下结果：</p>
+<p><img src="/blog/.io//../imgs/sendrecvreturnvalue1.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p>客户端确实是每隔 3 秒 <strong>send</strong> 一次数据。此时我们使用 <strong>lsof -i -Pn</strong> 命令查看连接状态，也是正常的：</p>
+<p><img src="/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p>然后，tcpdump 抓包结果输出中，除了连接时的三次握手数据包，再也无其他数据包，也就是说，<strong>send</strong> 函数发送 <strong>0</strong> 字节数据，<strong>client</strong> 的协议栈并不会把这些数据发出去。</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dns"><span class="hljs-number">1</span>[root@localhost ~]# tcpdump -i any &#x27;tcp port <span class="hljs-number">3000</span>&#x27;<br><span class="hljs-number">2</span>tcpdump: verbose output suppressed, use -v or -vv for full protocol decode<br><span class="hljs-number">3</span>listening on any, link-type LINUX_SLL (Linux cooked), capture size <span class="hljs-number">262144</span> bytes<br><span class="hljs-number">417:37:03</span>.<span class="hljs-number">028449</span> IP localhost.<span class="hljs-number">48820</span> &gt; localhost.hbci: Flags [S], seq <span class="hljs-number">1632283330</span>, win <span class="hljs-number">43690</span>, options [mss <span class="hljs-number">65495</span>,sackOK,TS val <span class="hljs-number">201295556</span> ecr <span class="hljs-number">0</span>,nop,wscale <span class="hljs-number">7</span>], length <span class="hljs-number">0</span><br><span class="hljs-number">517:37:03</span>.<span class="hljs-number">028479</span> IP localhost.hbci &gt; localhost.<span class="hljs-number">48820</span>: Flags [S.], seq <span class="hljs-number">3669336158</span>, ack <span class="hljs-number">1632283331</span>, win <span class="hljs-number">43690</span>, options [mss <span class="hljs-number">65495</span>,sackOK,TS val <span class="hljs-number">201295556</span> ecr <span class="hljs-number">201295556</span>,nop,wscale <span class="hljs-number">7</span>], length <span class="hljs-number">0</span><br><span class="hljs-number">617:37:03</span>.<span class="hljs-number">028488</span> IP localhost.<span class="hljs-number">48820</span> &gt; localhost.hbci: Flags [.], ack <span class="hljs-number">1</span>, win <span class="hljs-number">342</span>, options [nop,nop,TS val <span class="hljs-number">201295556</span> ecr <span class="hljs-number">201295556</span>], length <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>因此，<strong>server</strong> 端也会一直没有输出，如果你用的是 gdb 启动 <strong>server</strong>，此时中断下来会发现，<strong>server</strong> 端由于没有数据会一直阻塞在 <strong>recv</strong> 函数调用处（<strong>55</strong> 行）。</p>
+<p><img src="/blog/.io//../imgs/sendrecvreturnvalue2.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p>上述示例再次验证了，<strong>send</strong> 一个 0 字节的数据没有任何意思，希望读者在实际开发时，避免写出这样的代码。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+      
+        <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">#网络编程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【转载】非阻塞模式下send和recv函数的返回值</div>
+      <div>https://hudejie.gitee.io/blog/2021/05/06/转载/网络编程/非阻塞模式下send和recv函数的返回值/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>阿木大叔</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年5月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%91%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%AF%B9%E7%AB%AF%E4%B8%80%E7%9B%B4%E4%B8%8D%E6%94%B6%EF%BC%8C%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/" title="【转载】服务器端发数据时，如果对端一直不收，怎么办？">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【转载】服务器端发数据时，如果对端一直不收，怎么办？</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%B8%80%E5%AE%9A%E8%A6%81%E5%8D%95%E7%8B%AC%E5%BC%80%E7%BA%BF%E7%A8%8B%E5%90%97/" title="【转载】业务数据处理一定要单独开线程吗">
+                        <span class="hidden-mobile">【转载】业务数据处理一定要单独开线程吗</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://gitee.com/hudejie" target="_blank" rel="nofollow noopener"><span>Gitee</span></a> <i class="iconfont icon-love"></i> <a href="https://blog.csdn.net/qq_25549309?type=blog" target="_blank" rel="nofollow noopener"><span>CSDN</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

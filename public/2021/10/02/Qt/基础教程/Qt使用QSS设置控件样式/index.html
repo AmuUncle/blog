@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/amudashu.png">
+  <link rel="icon" href="/blog/img/amudashu.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="阿木大叔">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Qt使用QSS设置控件样式在这篇文章中，我们将会学习如何使用QSS（Qt样式表）来自定义QPushButton、QLabel、QLineEdit和QComboBox控件的样式。在Qt中，我们可以使用QSS来定制控件的外观，并且能够方便地整合到我们的应用程序中。 设置QPushButton的样式我们可以通过以下方式设置QPushButton的样式： 123456789101112131415QPus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qt使用QSS设置控件样式">
+<meta property="og:url" content="https://hudejie.gitee.io/blog/2021/10/02/Qt/%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/Qt%E4%BD%BF%E7%94%A8QSS%E8%AE%BE%E7%BD%AE%E6%8E%A7%E4%BB%B6%E6%A0%B7%E5%BC%8F/index.html">
+<meta property="og:site_name" content="阿木大叔的博客">
+<meta property="og:description" content="Qt使用QSS设置控件样式在这篇文章中，我们将会学习如何使用QSS（Qt样式表）来自定义QPushButton、QLabel、QLineEdit和QComboBox控件的样式。在Qt中，我们可以使用QSS来定制控件的外观，并且能够方便地整合到我们的应用程序中。 设置QPushButton的样式我们可以通过以下方式设置QPushButton的样式： 123456789101112131415QPus">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-02T02:34:06.000Z">
+<meta property="article:modified_time" content="2023-05-13T07:22:34.592Z">
+<meta property="article:author" content="阿木大叔">
+<meta property="article:tag" content="Qt">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Qt使用QSS设置控件样式 - 阿木大叔的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hudejie.gitee.io","root":"/blog/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blog/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>阿木大叔-博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Qt使用QSS设置控件样式"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-10-02 10:34" pubdate>
+          2021年10月2日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Qt使用QSS设置控件样式</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Qt使用QSS设置控件样式"><a href="#Qt使用QSS设置控件样式" class="headerlink" title="Qt使用QSS设置控件样式"></a>Qt使用QSS设置控件样式</h1><p>在这篇文章中，我们将会学习如何使用QSS（Qt样式表）来自定义QPushButton、QLabel、QLineEdit和QComboBox控件的样式。在Qt中，我们可以使用QSS来定制控件的外观，并且能够方便地整合到我们的应用程序中。</p>
+<h2 id="设置QPushButton的样式"><a href="#设置QPushButton的样式" class="headerlink" title="设置QPushButton的样式"></a>设置QPushButton的样式</h2><p>我们可以通过以下方式设置QPushButton的样式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp">QPushButton &#123;<br>    background-color: <span class="hljs-built_in">qlineargradient</span>(x1:<span class="hljs-number">0</span>, y1:<span class="hljs-number">0</span>, x2:<span class="hljs-number">1</span>, y2:<span class="hljs-number">1</span>, stop:<span class="hljs-number">0</span> #<span class="hljs-number">3b</span>78e6, stop:<span class="hljs-number">1</span> #<span class="hljs-number">0f</span>5fd7);<br>    border-radius: <span class="hljs-number">5</span>px;<br>    color: white;<br>    font-weight: bold;<br>    padding: <span class="hljs-number">5</span>px <span class="hljs-number">15</span>px;<br>&#125;<br><br>QPushButton:hover &#123;<br>    background-color: <span class="hljs-built_in">qlineargradient</span>(x1:<span class="hljs-number">0</span>, y1:<span class="hljs-number">0</span>, x2:<span class="hljs-number">1</span>, y2:<span class="hljs-number">1</span>, stop:<span class="hljs-number">0</span> #<span class="hljs-number">60</span>a3f7, stop:<span class="hljs-number">1</span> #<span class="hljs-number">3b</span>78e6);<br>&#125;<br><br>QPushButton:pressed &#123;<br>    background-color: <span class="hljs-built_in">qlineargradient</span>(x1:<span class="hljs-number">0</span>, y1:<span class="hljs-number">0</span>, x2:<span class="hljs-number">1</span>, y2:<span class="hljs-number">1</span>, stop:<span class="hljs-number">0</span> #<span class="hljs-number">0f</span>5fd7, stop:<span class="hljs-number">1</span> #<span class="hljs-number">3b</span>78e6);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这里，我们将QPushButton控件的背景设置为颜色渐变，使用了border-radius属性添加圆角边框。我们还改变了字体加粗程度和颜色，并且为按钮设置了padding属性。同时，我们还在:hover和:pressed状态下分别修改按钮的渐变背景色。</p>
+<h2 id="设置QLabel的样式"><a href="#设置QLabel的样式" class="headerlink" title="设置QLabel的样式"></a>设置QLabel的样式</h2><p>与QPushButton的设置方式相似，我们可以使用以下代码来设置QLabel的样式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp">QLabel &#123;<br>    background-color: #d8e5f4;<br>    border: <span class="hljs-number">1</span>px solid #c7d9ea;<br>    color: #<span class="hljs-number">333333</span>;<br>    padding: <span class="hljs-number">2</span>px;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>对于QLabel控件，我们将其背景设置为固定的颜色，在边界中添加了细的灰色边框，并为文本设置了适当的内边距。</p>
+<h2 id="设置QLineEdit的样式"><a href="#设置QLineEdit的样式" class="headerlink" title="设置QLineEdit的样式"></a>设置QLineEdit的样式</h2><p>我们可以使用以下代码来设置QLineEdit的样式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp">QLineEdit &#123;<br>    background-color: <span class="hljs-meta">#ffffff;</span><br>    border: <span class="hljs-number">1</span>px solid #c7d9ea;<br>    color: #<span class="hljs-number">444444</span>;<br>    padding: <span class="hljs-number">2</span>px;<br>&#125;<br><br>QLineEdit:focus &#123;<br>    border: <span class="hljs-number">1</span>px solid #<span class="hljs-number">3b</span>79e6;<br>    outline: none;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里，我们设置了QLineEdit控件的背景色和边框颜色，使其看起来更加干净。对于焦点情况，我们添加了一个以蓝色突出表示的边框线，并禁用了默认的外观字体样式应用。</p>
+<h2 id="设置QComboBox的样式"><a href="#设置QComboBox的样式" class="headerlink" title="设置QComboBox的样式"></a>设置QComboBox的样式</h2><p>最后，我们使用以下代码来设置QComboBox的样式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp">QComboBox &#123;<br>    background-color: <span class="hljs-meta">#ffffff;</span><br>    border: <span class="hljs-number">1</span>px solid #c7d9ea;<br>    color: #<span class="hljs-number">444444</span>;<br>    padding: <span class="hljs-number">2</span>px;    <br>&#125;<br><br>QComboBox:editable &#123;<br>    background-color: <span class="hljs-meta">#ffffff;</span><br>&#125;<br><br>QComboBox QAbstractItemView &#123;<br>    border: <span class="hljs-number">1</span>px solid #c7d9ea;<br>    selection-background-color: #<span class="hljs-number">3b</span>78e6;<br>    selection-color: white;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这里，我们设置了QComboBox控件的背景色和边框颜色，以及它的文本颜色并添加了适当的内边距。对于可编辑的QComboBox，我们还单独为其设置了背景色。最后，我们修改QComboBox中项目视图的边框线，并为选中的项提供了更明显的文本和渐变背景颜色。</p>
+<p>在本篇文章中，我们学习了如何使用QSS来自定义QPushButton、QLabel、QLineEdit和QComboBox控件的外观样式。Qt提供了很多的属性可以帮助我们改变控件的外观，并且使得我们可以创建具有自定义外观的应用程序。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/Qt%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/" class="category-chain-item">Qt基础教程</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/Qt/">#Qt</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Qt使用QSS设置控件样式</div>
+      <div>https://hudejie.gitee.io/blog/2021/10/02/Qt/基础教程/Qt使用QSS设置控件样式/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>阿木大叔</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年10月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2021/10/03/Qt/%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/Qt%E9%AB%98%E7%BA%A7%E7%BB%98%E5%9B%BE/" title="Qt高级绘图">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Qt高级绘图</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2021/09/29/Qt/%E5%9F%BA%E7%A1%80%E6%95%99%E7%A8%8B/Qt%E7%BB%98%E5%88%B6%E6%8C%87%E9%92%88%E6%97%B6%E9%92%9F/" title="Qt绘制指针时钟">
+                        <span class="hidden-mobile">Qt绘制指针时钟</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://gitee.com/hudejie" target="_blank" rel="nofollow noopener"><span>Gitee</span></a> <i class="iconfont icon-love"></i> <a href="https://blog.csdn.net/qq_25549309?type=blog" target="_blank" rel="nofollow noopener"><span>CSDN</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
