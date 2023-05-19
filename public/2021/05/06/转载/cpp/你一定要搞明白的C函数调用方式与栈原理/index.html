@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="你一定要搞明白的C函数调用方式与栈原理写在前面的话 这绝对不是标题党。而是C&#x2F;C++开发中你必须要掌握的基础知识，也是高级技术岗位面试中高频题。我真的真的真的希望无论是学生还是广大C&#x2F;C++开发者，都该掌握此文中介绍的知识。 正文 这篇blog试图讲明当一个c函数被调用时，一个**栈帧(stack frame)**是如何被建立，又如何被消除的。这些细节跟操作系统平台及编译器的实">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack1.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack2.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack3.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack4.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack5.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack6.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack1.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack2.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack3.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack4.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack5.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack6.png">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:21.027Z">
 <meta property="article:author" content="阿木大叔">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="学习资料">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io/imgs/stack1.png">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/stack1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -291,7 +291,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 分钟前
+                    本文最后更新于：23 分钟前
                   
                 
               </p>
@@ -303,7 +303,7 @@
 <p><strong>这绝对不是标题党。而是C&#x2F;C++开发中你必须要掌握的基础知识，也是高级技术岗位面试中高频题。我真的真的真的希望无论是学生还是广大C&#x2F;C++开发者，都该掌握此文中介绍的知识。</strong></p>
 <p><strong>正文</strong></p>
 <p>这篇blog试图讲明当一个c函数被调用时，一个**栈帧(stack frame)**是如何被建立，又如何被消除的。这些细节跟操作系统平台及编译器的实现有关，下面的描述是针对运行在Intel奔腾芯片上Linux的gcc编译器而言。c语言的标准并没有描述实现的方式，所以，不同的编译器，处理器，操作系统都可能有自己的建立栈帧的方式。</p>
-<h3 id="一个典型的栈帧"><a href="#一个典型的栈帧" class="headerlink" title="一个典型的栈帧"></a>一个典型的栈帧</h3><p><img src="/blog/.io//../imgs/stack1.png" srcset="/blog/img/loading.gif" lazyload></p>
+<h3 id="一个典型的栈帧"><a href="#一个典型的栈帧" class="headerlink" title="一个典型的栈帧"></a>一个典型的栈帧</h3><p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/../imgs/stack1.png" srcset="/blog/img/loading.gif" lazyload></p>
 <p>图1是一个典型的栈帧，图中，栈顶在上，地址空间往下增长。<br>这是如下一个函数调用时的栈的内容：</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">foo</span><span class="hljs-params">(<span class="hljs-type">int</span> arg1, <span class="hljs-type">int</span> arg2, <span class="hljs-type">int</span> arg3)</span></span>; <br></code></pre></td></tr></table></figure>
 
@@ -332,25 +332,25 @@
 <figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autoit"><span class="hljs-built_in">call</span> foo<br></code></pre></td></tr></table></figure>
 
 <p><strong>当call指令执行的时候，EIP指令指针寄存器的内容被压入栈中</strong>。因为EIP寄存器是指向main中的下一条指令，所以现在返回地址就在栈顶了。在call指令执行完之后，下一个执行周期将从名为foo的标记处开始。<br>图2展示了call指令完成后栈的内容。图2及后续图中的<strong>粗线</strong>指示了函数调用前栈顶的位置。我们将会看到，当整个函数调用过程结束后，栈顶又回到了这个位置。</p>
-<p><img src="/blog/.io//../imgs/stack2.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/../imgs/stack2.png" srcset="/blog/img/loading.gif" lazyload></p>
 <h3 id="被调用者在函数调用后的动作"><a href="#被调用者在函数调用后的动作" class="headerlink" title="被调用者在函数调用后的动作"></a>被调用者在函数调用后的动作</h3><p>当函数foo，也就是被调用者取得程序的控制权，它<strong>必须做3件事</strong>：建立它自己的栈帧，为局部变量分配空间，最后，如果需要，保存寄存器EBX，ESI和EDI的值。<br>首先foo必须建立它自己的栈帧。EBP寄存器现在正指向main的栈帧中的某个位置，这个值必须被保留，因此，EBP进栈。然后ESP的内容赋值给了EBP。这使得函数的参数可以通过对EBP附加一个偏移量得到，而栈寄存器ESP便可以空出来做其他事情。如此一来，几乎所有的c函数都由如下两个指令开始：</p>
 <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">push</span> <span class="hljs-built_in">ebp</span><br><span class="hljs-keyword">mov</span> <span class="hljs-built_in">ebp</span>, <span class="hljs-built_in">esp</span><br></code></pre></td></tr></table></figure>
 
 <p>此时的栈入图3所示。在这个场景中，第一个参数的地址是EBP加8，因为main的EBP和返回地址各在栈中占了4个字节。</p>
-<p><img src="/blog/.io//../imgs/stack3.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/../imgs/stack3.png" srcset="/blog/img/loading.gif" lazyload></p>
 <p>​       </p>
 <p>下一步，foo必须为它的局部变量分配空间，同时，也必须为它可能用到的一些临时变量分配空间。比如，foo中的一些C语句可能包括复杂的表达式，其子表达式的中间值就必须得有地方存放。这些存放中间值的地方同城被称为临时的，因为他们可以为下一个复杂表达式所复用。为说明方便，我们假设我们的foo中有两个int类型（每个4字节）的局部变量，需要额外的12字节的临时存储空间。简单地把栈指针减去20便为这20个字节分配了空间：</p>
 <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">sub</span> <span class="hljs-built_in">esp</span>, <span class="hljs-number">20</span><br></code></pre></td></tr></table></figure>
 
 <p>现在，局部变量和临时存储都可以通过基准指针EBP加偏移量找到了。<br>最后，如果foo用到EBX，ESI和EDI寄存器，则它f必须在栈里保存它们。结果，现在的栈如图4所示。 </p>
-<p><img src="/blog/.io//../imgs/stack4.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/../imgs/stack4.png" srcset="/blog/img/loading.gif" lazyload></p>
 <p>​    </p>
 <p>foo的函数体现在可以执行了。这其中也许有进栈、出栈的动作，栈指针ESP也会上下移动，但EBP是保持不变的。这意味着我们可以一直用[EBP+8]找到第一个参数，而不管在函数中有多少进出栈的动作。<br>函数foo的执行也许还会调用别的函数，甚至递归地调用foo本身。然而，只要EBP寄存器在这些子调用返回时被恢复，就可以继续用EBP加上偏移量的方式访问实际参数，局部变量和临时存储。</p>
 <h3 id="被调用者返回前的动作"><a href="#被调用者返回前的动作" class="headerlink" title="被调用者返回前的动作"></a>被调用者返回前的动作</h3><p>在把程序控制权返还给调用者前，被调用者foo必须先把返回值保存在<strong>EAX</strong>寄存器中。我们前面已经讨论过，当返回值占用多于4个或8个字节时，接收返回值的变量地址会作为一个额外的指针参数被传到函数中，而函数本身就不需要返回值了。这种情况下，被调用者直接通过内存拷贝把返回值直接拷贝到接收地址，从而省去了一次通过栈的中转拷贝。<br>其次，foo必须恢复EBX，ESI和EDI寄存器的值。如果这些寄存器被修改，正如我们前面所说，我们会在foo执行开始时把它们的<strong>原始值压入栈中</strong>。如果ESP寄存器指向如图4所示的正确位置，寄存器的原始值就可以出栈并恢复。可见，在foo函数的执行过程中正确地跟踪ESP是多么的重要————也就是说，进栈和出栈操作的次数必须保持平衡。<br>这两步之后，我们不再需要foo的局部变量和临时存储了，我们可以通过下面的指令消除栈帧：</p>
 <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">mov</span> <span class="hljs-built_in">esp</span>, <span class="hljs-built_in">ebp</span><br><span class="hljs-keyword">pop</span> <span class="hljs-built_in">ebp</span><br></code></pre></td></tr></table></figure>
 
 <p>其结果就是现在栈里的内容跟图2中所示的栈完全一样。现在可以执行返回指令了。从栈里弹出返回地址，赋值给EIP寄存器。栈如图5所示：</p>
-<p><img src="/blog/.io//../imgs/stack5.png" srcset="/blog/img/loading.gif" lazyload> </p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/../imgs/stack5.png" srcset="/blog/img/loading.gif" lazyload> </p>
 <p>i386指令集有一条<strong>“leave”</strong>指令，它与上面提到的mov和pop指令所作的动作完全相同。所以，C函数通常以这样的指令结束：</p>
 <figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-keyword">leave</span><br><span class="hljs-keyword">ret</span><br></code></pre></td></tr></table></figure>
 
@@ -368,7 +368,7 @@
 <figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-number">9</span>:   <span class="hljs-keyword">int</span> main(<span class="hljs-keyword">int</span> argc, char* argv[])<br><span class="hljs-number">10</span>:   &#123;<br><span class="hljs-symbol">00401070 </span>  push        ebp<br><span class="hljs-symbol">00401071 </span>  mov         ebp,esp<br><span class="hljs-symbol">00401073 </span>  sub         esp,<span class="hljs-number">40</span>h<br><span class="hljs-symbol">00401076 </span>  push        ebx<br><span class="hljs-symbol">00401077 </span>  push        esi<br><span class="hljs-symbol">00401078 </span>  push        edi<br><span class="hljs-symbol">00401079 </span>  lea         edi,[ebp-<span class="hljs-number">40</span>h]<br><span class="hljs-number">0040107</span>C   mov         ecx,<span class="hljs-number">10</span>h<br><span class="hljs-symbol">00401081 </span>  mov         eax,<span class="hljs-number">0</span>CCCCCCCCh<br><span class="hljs-symbol">00401086 </span>  rep stos    dword ptr [edi]<br><span class="hljs-number">11</span>:        printf(<span class="hljs-string">&quot;%d&quot;</span>,test(<span class="hljs-number">10</span>,<span class="hljs-number">90</span>));<br><span class="hljs-symbol">00401088 </span>  push        <span class="hljs-number">5</span>Ah<br><span class="hljs-number">0040108</span>A   push        <span class="hljs-number">0</span>Ah<br><span class="hljs-number">0040108</span>C   <span class="hljs-keyword">call</span>        @ILT+<span class="hljs-number">0</span>(test) (<span class="hljs-number">00401005</span>)<br><span class="hljs-symbol">00401091 </span>  add         esp,<span class="hljs-number">8</span><br><span class="hljs-symbol">00401094 </span>  push        eax<br><span class="hljs-symbol">00401095 </span>  push        offset string <span class="hljs-string">&quot;%d&quot;</span> (<span class="hljs-number">0042201</span>c)<br><span class="hljs-number">0040109</span>A   <span class="hljs-keyword">call</span>        printf (<span class="hljs-number">004010d0</span>)<br><span class="hljs-number">0040109</span>F   add         esp,<span class="hljs-number">8</span><br><span class="hljs-number">12</span>:        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-number">004010</span>A2   <span class="hljs-keyword">xor</span>         eax,eax<br><span class="hljs-number">13</span>:   &#125;<br></code></pre></td></tr></table></figure>
 
 <p>下面来解释一下，</p>
-<p><img src="/blog/.io//../imgs/stack6.png" srcset="/blog/img/loading.gif" lazyload><br>开始进入Main函数 esp&#x3D;0x12FF84  ebp&#x3D;0x12FFC0<br>完成椭圆形框起来的部分：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/../imgs/stack6.png" srcset="/blog/img/loading.gif" lazyload><br>开始进入Main函数 esp&#x3D;0x12FF84  ebp&#x3D;0x12FFC0<br>完成椭圆形框起来的部分：</p>
 <figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">00401070 </span>  push        ebp<br></code></pre></td></tr></table></figure>
 
 <p><strong>ebp的值入栈，保存现场(调用现场</strong>，从test函数看，如红线所示，即保存的0x12FF80用于从test函数堆栈返回到main函数)：</p>

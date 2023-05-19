@@ -23,19 +23,19 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="如何使用 Visual Studio 管理和阅读开源项目代码对于 Linux C&#x2F;C++ 项目，虽然我们在 Linux 系统中使用 gdb 去调试，但是通常情况下对于 C&#x2F;C++ 项目笔者一般习惯使用 Visual Studio 去做项目管理，Visual Studio 提供了强大的 C&#x2F;C++ 项目开发和管理能力。这里以 redis 源码为例，介绍一下如何将这种开源">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/vs1.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/vs2.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/vs3.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/vs4.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/vs1.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/vs2.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/vs3.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/vs4.png">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:21.196Z">
 <meta property="article:author" content="阿木大叔">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="学习资料">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io/imgs/vs1.png">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/vs1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -291,7 +291,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 分钟前
+                    本文最后更新于：23 分钟前
                   
                 
               </p>
@@ -303,17 +303,17 @@
 <ol>
 <li>启动 Visual Studio 新建一个空的 Win32 控制台程序。(工程建好后，关闭该工程防止接下来的步骤中文件占用导致的无法移动。)</li>
 </ol>
-<p><img src="/blog/.io//../imgs/vs1.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/../imgs/vs1.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p>\2. 这样会在 redis 源码目录下会根据你设置的名称生成一个文件夹（这里是 redis-4.0.1），将该文件夹中所有文件拷贝到 redis 源码根目录，然后删掉生成的这个文件夹。</p>
-<p><img src="/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
-<p><img src="/blog/.io//../imgs/vs2.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/../imgs/vs2.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p> \3. 再次用 Visual Studio 打开 redis-4.0.1.sln 文件，然后在<strong>解决方案资源管理器</strong>视图中点击<strong>显示所有文件</strong>按钮并保持该按钮选中。（如果找不到<strong>解决方案资源管理器</strong>视图，可以在【<strong>视图</strong>】菜单中打开，快捷键 Ctrl + Alt + L。）</p>
-<p><img src="/blog/.io//../imgs/vs3.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/../imgs/vs3.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p>\4. 然后选中所有需要添加到解决方案中的文件，右键选择菜单【<strong>包括在项目中</strong>】即可，如果文件比较多，Visual Studio 可能需要一会儿才能完成，为了减少等待时间，读者也可以一批一批的添加。</p>
-<p><img src="/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p>5.接着选择【<strong>文件</strong>】菜单【<strong>全部保存</strong>】菜单项保存即可（快捷键 <strong>Ctrl + Shift + S</strong> ）。</p>
 <p>最终效果如下图所示：</p>
-<p><img src="/blog/.io//../imgs/vs4.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8VisualStudio%E7%AE%A1%E7%90%86%E5%92%8C%E9%98%85%E8%AF%BB%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%BB%A3%E7%A0%81/../imgs/vs4.png" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p>这样我们就能利用 Visual Studio 强大的功能管理和阅读我们的源码了。</p>
 <blockquote>
 <p>这里要提醒一下读者：<strong>C&#x2F;C++ 开源项目中一般会使用各种宏去条件编译一些代码，实际生成的二进制文件中不一定包含这些代码，所以在 Visual Studio 中看到某段代码的行号与实际在 gdb 中调试的代码行号不一定相同，在给某一行代码设置断点时请以 gdb 中 list 命令看到的代码行号为准</strong>。</p>

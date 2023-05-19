@@ -23,14 +23,14 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="日志系统的设计为什么需要日志实际的软件项目产出都有一个流程，即先开发、测试，再发布生产，由于人的因素，既然是软件产品就不可能百分百没有 bug 或者逻辑错误，对于已经发布到生产的项目，一旦某个时刻产生非预期的结果，我们就需要去定位和排查问题。但是一般正式的生产环境的服务器或者产品是不允许开发人员通过附加调试器去排查问题的，主要有如下可能原因：  在很多互联网企业，开发部门、测试部分和产品运维部门是">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/log1.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/imgs/log1.png">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:22.406Z">
 <meta property="article:author" content="阿木大叔">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="高性能服务器框架设计">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io/imgs/log1.png">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/imgs/log1.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -286,7 +286,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 分钟前
+                    本文最后更新于：23 分钟前
                   
                 
               </p>
@@ -330,7 +330,7 @@
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs arduino">[<span class="hljs-number">2018</span><span class="hljs-number">-11</span><span class="hljs-number">-09</span> <span class="hljs-number">23</span>:<span class="hljs-number">52</span>:<span class="hljs-number">54</span>:<span class="hljs-number">0826</span>][INFO][ThreadID: <span class="hljs-number">7252</span>][<span class="hljs-function"><span class="hljs-type">bool</span> __thiscall <span class="hljs-title">CIUSocket::Login</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *,<span class="hljs-type">const</span> <span class="hljs-type">char</span> *,<span class="hljs-type">int</span>,<span class="hljs-type">int</span>,<span class="hljs-type">int</span>,<span class="hljs-keyword">class</span> std::basic_string&lt;<span class="hljs-type">char</span>,<span class="hljs-keyword">struct</span> std::char_traits&lt;<span class="hljs-type">char</span>&gt;,<span class="hljs-keyword">class</span> std::allocator&lt;<span class="hljs-type">char</span>&gt; &gt; &amp;)</span>:<span class="hljs-number">1107</span>]Request logon: Account=</span>zhangy, Password=*****, Status=<span class="hljs-number">76283204</span>, LoginType=<span class="hljs-number">1.</span><br>[<span class="hljs-number">2018</span><span class="hljs-number">-11</span><span class="hljs-number">-09</span> <span class="hljs-number">23</span>:<span class="hljs-number">52</span>:<span class="hljs-number">56</span>:<span class="hljs-number">0352</span>][INFO][ThreadID: <span class="hljs-number">5828</span>][<span class="hljs-type">void</span> __thiscall CIUSocket::<span class="hljs-built_in">SendThreadProc</span>(<span class="hljs-type">void</span>):<span class="hljs-number">794</span>]Recv data thread start...<br>[<span class="hljs-number">2018</span><span class="hljs-number">-11</span><span class="hljs-number">-09</span> <span class="hljs-number">23</span>:<span class="hljs-number">52</span>:<span class="hljs-number">56</span>:<span class="hljs-number">0385</span>][INFO][ThreadID: <span class="hljs-number">6032</span>][<span class="hljs-type">void</span> __thiscall CSendMsgThread::<span class="hljs-built_in">HandleUserBasicInfo</span>(<span class="hljs-type">const</span> <span class="hljs-keyword">class</span> CUserBasicInfoRequest *):<span class="hljs-number">298</span>]Request to get userinfo.<br>[<span class="hljs-number">2018</span><span class="hljs-number">-11</span><span class="hljs-number">-09</span> <span class="hljs-number">23</span>:<span class="hljs-number">52</span>:<span class="hljs-number">56</span>:<span class="hljs-number">0355</span>][INFO][ThreadID: <span class="hljs-number">7140</span>][<span class="hljs-type">void</span> __thiscall CIUSocket::<span class="hljs-built_in">RecvThreadProc</span>(<span class="hljs-type">void</span>):<span class="hljs-number">842</span>]Recv data thread start...<br>[<span class="hljs-number">2018</span><span class="hljs-number">-11</span><span class="hljs-number">-09</span> <span class="hljs-number">23</span>:<span class="hljs-number">52</span>:<span class="hljs-number">57</span>:<span class="hljs-number">0254</span>][INFO][ThreadID: <span class="hljs-number">7220</span>][<span class="hljs-type">int</span> __thiscall CRecvMsgThread::<span class="hljs-built_in">HandleFriendListInfo</span>(<span class="hljs-type">const</span> <span class="hljs-keyword">class</span> std::basic_string&lt;<span class="hljs-type">char</span>,<span class="hljs-keyword">struct</span> std::char_traits&lt;<span class="hljs-type">char</span>&gt;,<span class="hljs-keyword">class</span> std::allocator&lt;<span class="hljs-type">char</span>&gt; &gt; &amp;):<span class="hljs-number">593</span>]Recv user basic info, info count=<span class="hljs-number">1.</span><br></code></pre></td></tr></table></figure>
 
 <h5 id="多线程同步写日志出现的问题一"><a href="#多线程同步写日志出现的问题一" class="headerlink" title="多线程同步写日志出现的问题一"></a>多线程同步写日志出现的问题一</h5><p>从上面的日志输出来看，这种同步的日志输出方式，也存在时间顺序不正确的问题（时间戳大的日志比时间戳小的日志靠前）。这是由于多线程同时写日志到同一个文件时，产生日志的时间和实际写入磁盘的时间不是一个原子操作。下图解释了该现象出现的根源：</p>
-<p><img src="/blog/.io//../imgs/log1.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1/../imgs/log1.png" srcset="/blog/img/loading.gif" lazyload></p>
 <p>多线程写同一个日志文件出现先产生的日志后写入到文件中的现象</p>
 <p>好在这种时间顺序不正确只会出现在不同线程之间，对于同一个线程的不同时间的日志记录顺序肯定是正确的。所以这种日期错乱现象，并不影响我们使用日志。</p>
 <h5 id="多线程同步写日志出现的问题二"><a href="#多线程同步写日志出现的问题二" class="headerlink" title="多线程同步写日志出现的问题二"></a>多线程同步写日志出现的问题二</h5><p>多线程同时写入同一个日志文件还有一个问题，就是假设线程 A 写某一个时刻追加日志内容为 “AAAAA” ，线程 B 在同一时刻追加日志内容为 “BBBBB” ，线程 C 在同一时刻追加日志内容为 “CCCCC” ，那么最终的日志文件中的内容会不会出现 “AABBCCABCAACCBB” 这种格式？</p>

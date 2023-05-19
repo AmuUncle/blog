@@ -23,7 +23,7 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="libevent源码深度剖析12让libevent支持多线程 libevent本身不是多线程安全的，在多核的时代，如何能充分利用CPU的能力呢，这一节来说说如何在多线程环境中使用libevent，跟源代码并没有太大的关系，纯粹是使用上的技巧。 1. 错误使用示例在多核的CPU上只使用一个线程始终是对不起CPU的处理能力啊，那好吧，那就多创建几个线程，比如下面的简单服务器场景。1 主线程创建工作线程">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/libevent11.webp">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent11.webp">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:22.354Z">
 <meta property="article:author" content="阿木大叔">
@@ -31,7 +31,7 @@
 <meta property="article:tag" content="libevent">
 <meta property="article:tag" content="源码解析">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io/imgs/libevent11.webp">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent11.webp">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -287,7 +287,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 分钟前
+                    本文最后更新于：23 分钟前
                   
                 
               </p>
@@ -303,7 +303,7 @@
 <h4 id="2-2-纯粹的消息通知机制"><a href="#2-2-纯粹的消息通知机制" class="headerlink" title="2.2 纯粹的消息通知机制"></a>2.2 纯粹的消息通知机制</h4><p>那么基于纯粹的消息通知机制的多线程方式就像下面这样：<br>1 当时你正在写文档；<br>2 你的头找到了一个任务，要指派给你，帮他搞个PPT；<br>3 头发个消息到你信箱，有个PPT要帮他搞定，这时你并不鸟他；<br>4 你写好文档，接着检查消息发现头有个PPT要你搞定，你开始搞PPT；<br>…<br>第一种的好处是消息可以立即得到处理，但是很方法很粗暴，你必须立即处理这个消息，所以你必须处理好切换问题，省得把文档上的内容不小心写到PPT里。在操作系统的进程通信中，消息队列（消息信箱）都是操作系统维护的，你不必关心。<br>第二种的优点是通过消息通知，切换问题省心了，不过消息是不能立即处理的（基于消息通知机制，这个总是难免的），而且所有的内容都通过消息发送，比如PPT的格式、内容等等信息，这无疑增加了<strong>通信开销</strong>。</p>
 <h4 id="2-3-消息通知-同步层"><a href="#2-3-消息通知-同步层" class="headerlink" title="2.3 消息通知+同步层"></a>2.3 消息通知+同步层</h4><p>有个折中机制可以减少消息通信的开销，就是提取一个同步层，还拿上面的例子来说，你把工作安排都存放在一个工作队列中，而且你能够保证“任何人把新任务扔到这个队列”，“自己取出当前第一个任务”等这些操作都能够保证不会把队列搞乱（其实就是个加锁的队列容器）。<br>再来看看处理过程和上面有什么不同：<br>1 当时你正在写文档；<br>2 你的头找到了一个任务，要指派给你，帮他搞个PPT；<br>2 头有个PPT要你搞定，他把任务push到你的工作队列中，包括了PPT的格式、内容等信息；<br>3 头发个消息（一个字节）到你信箱，有个PPT要帮他搞定，这时你并不鸟他；<br>4 你写好文档，发现有新消息（这预示着有新任务来了），检查工作队列知道头有个PPT要你搞定，你开始搞PPT；<br>…<br>工作队列其实就是一个加锁的容器（队列、链表等等），这个很容易实现实现；而消息通知仅需要一个字节，具体的任务都push到了在工作队列中，因此想比2.2减少了不少通信开销。<br>多线程编程有很多陷阱，线程间资源的同步互斥不是一两句能说得清的，而且出现bug很难跟踪调试；这也有很多的经验和教训，因此如果让我选择，在绝大多数情况下都会选择机制3作为实现多线程的方法。</p>
 <h3 id="3-例子——memcached"><a href="#3-例子——memcached" class="headerlink" title="3. 例子——memcached"></a>3. 例子——memcached</h3><p><strong>Memcached</strong>中的网络部分就是基于libevent完成的，其中的多线程模型就是典型的<strong>消息通知+同步层机制</strong>。下面的图足够说明其多线程模型了，其中有详细的文字说明。</p>
-<p><img src="/blog/.io//../imgs/libevent11.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9012/../imgs/libevent11.webp" srcset="/blog/img/loading.gif" lazyload></p>
 <p>注：该图的具体出处忘记了，感谢原作者。</p>
 <h3 id="4-小节"><a href="#4-小节" class="headerlink" title="4. 小节"></a>4. 小节</h3><p>本节更是libevent的使用方面的技巧，讨论了一下如何让libevent支持多线程，以及几种支持多线程的机制，和memcached使用libevent的多线程模型。</p>
 

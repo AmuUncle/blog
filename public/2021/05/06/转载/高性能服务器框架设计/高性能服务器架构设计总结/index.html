@@ -23,7 +23,7 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="高性能服务器架构设计总结系列目录 第01篇 主线程与工作线程的分工 第02篇 Reactor模式 第03篇 一个服务器程序的架构介绍 第04篇 如何将socket设置为非阻塞模式 第05篇 如何编写高性能日志 第06篇 关于网络编程的一些实用技巧和细节 第07篇 开源一款即时通讯软件的源码 第08篇 高性能服务器架构设计总结1 第09篇 高性能服务器架构设计总结2 第10篇 高性能服务器架构设计总">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E6%80%BB%E7%BB%93/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
 <meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/TufFCFqd0g1auSibZlAkictBtctpBKJzkiakQOTPBFLeRvjib25cL3EAccpH5YKFwhKEuxKVwFTKacWKm5ic6rnB1Ew/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:22.407Z">
@@ -31,7 +31,7 @@
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="高性能服务器框架设计">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E6%80%BB%E7%BB%93/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -287,7 +287,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 分钟前
+                    本文最后更新于：23 分钟前
                   
                 
               </p>
@@ -501,7 +501,7 @@
 <p>第11篇 高性能服务器架构设计总结4</p>
 <h2 id="二、架构篇"><a href="#二、架构篇" class="headerlink" title="二、架构篇"></a>二、架构篇</h2><p>一个项目的服务器端往往由很多服务组成，就算单个服务在性能上做到极致，支持的并发数量也是有限的。举个简单的例子，假如一个聊天服务器，每个用户的信息是1k，那对于一个8G的内存的机器，在不考虑其它的情况下8<em>1024</em>1024*1024 &#x2F; 100 &#x3D; 1024，实际有838万，但实际这只是非常理想的情况。<strong>所以我们有时候需要需要某个服务部署多套，就单个服务的实现来讲还是《框架篇》中介绍的</strong>。</p>
 <p>1</p>
-<p>我们举个例子：<img src="/blog/.io//gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p>我们举个例子：<img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E6%80%BB%E7%BB%93/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p>这是蘑菇街TeamTalk的服务器架构。</p>
 <p>MsgServer是聊天服务，可以部署多套，每个聊天服务器启动时都会告诉loginSever和routeSever自己的ip地址和端口号，当有用户上线或者下线的时候，MsgServer也会告诉loginSever和routeSever自己上面最新的用户数量和用户id列表。</p>
 <p>现在一个用户需要<strong>登录</strong>，先连接loginServer，loginServer根据记录的各个MsgServer上的用户情况，返回一个最小负载的MsgServer的ip地址和端口号给客户端，客户端再利用这个ip地址和端口号去登录MsgServer。当<strong>聊天</strong>时，位于A MsgServer上的用户给另外一个用户发送消息，如果该用户不在同一个MsgServer上，MsgServer将消息转发给RouteServer，RouteServer根据自己记录的用户id信息找到目标用户所在的MsgServer并转发给对应的MsgServer。</p>

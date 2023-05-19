@@ -23,8 +23,8 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="libevent源码深度剖析09集成定时器事件 现在再来详细分析libevent中I&#x2F;O事件和Timer事件的集成，与Signal相比，Timer事件的集成会直观和简单很多。Libevent对堆的调整操作做了一些优化，本节还会描述这些优化方法。 1. 集成到事件主循环因为系统的I&#x2F;O机制像select()和epoll_wait()都允许程序制定一个最大等待时间（也称为最大超时时">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/libevent9.webp">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/.io/imgs/libevent10.webp">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent9.webp">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent10.webp">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:22.352Z">
 <meta property="article:author" content="阿木大叔">
@@ -32,7 +32,7 @@
 <meta property="article:tag" content="libevent">
 <meta property="article:tag" content="源码解析">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/.io/imgs/libevent9.webp">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent9.webp">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -288,7 +288,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：4 分钟前
+                    本文最后更新于：23 分钟前
                   
                 
               </p>
@@ -315,9 +315,9 @@
 
 <p>由于每次调整都少做一次赋值操作，在调整路径比较长时，调整效率会比第一种有所提高。libevent中的**min_heap_shift_up_()<strong>函数就是上面逻辑的具体实现，对应的向下调整函数是</strong>min_heap_shift_down_()**。</p>
 <p>举个例子，向一个小根堆3, 5, 8, 7, 12中插入新元素2，使用第一中典型的代码逻辑，其调整过程如下图所示：</p>
-<p><img src="/blog/.io//../imgs/libevent9.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9009/../imgs/libevent9.webp" srcset="/blog/img/loading.gif" lazyload></p>
 <p>使用libevent中的堆调整逻辑，调整过程如下图所示：</p>
-<p><img src="/blog/.io//../imgs/libevent10.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9009/../imgs/libevent10.webp" srcset="/blog/img/loading.gif" lazyload></p>
 <p>对于删除和元素修改操作，也遵从相同的逻辑，就不再罗嗦了。</p>
 <h3 id="3-小节"><a href="#3-小节" class="headerlink" title="3. 小节"></a>3. 小节</h3><p>通过设置系统I&#x2F;O机制的wait时间，从而简洁的集成Timer事件；主要分析了libevent对堆调整操作的优化。</p>
 
