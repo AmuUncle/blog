@@ -23,15 +23,15 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="详解 C++ 11 中的智能指针C&#x2F;C++ 语言最为人所诟病的特性之一就是存在内存泄露问题，因此后来的大多数语言都提供了内置内存分配与释放功能，有的甚至干脆对语言的使用者屏蔽了内存指针这一概念。这里不置贬褒，手动分配内存与手动释放内存有利也有弊，自动分配内存和自动释放内存亦如此，这是两种不同的设计哲学。有人认为，内存如此重要的东西怎么能放心交给用户去管理呢？而另外一些人则认为，内存如此重">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/sp1.webp">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/sp2.webp">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/imgs">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:21.199Z">
 <meta property="article:author" content="阿木大叔">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="学习资料">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/imgs/sp1.webp">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/imgs">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -287,7 +287,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：23 分钟前
+                    本文最后更新于：38 分钟前
                   
                 
               </p>
@@ -431,9 +431,9 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    std::shared_ptr&lt;<span class="hljs-type">int</span>&gt; sp0;<br>    std::shared_ptr&lt;std::string&gt; sp1;<br>    sp1.<span class="hljs-built_in">reset</span>(<span class="hljs-keyword">new</span> std::<span class="hljs-built_in">string</span>());<br>    std::unique_ptr&lt;<span class="hljs-type">int</span>&gt; sp2;<br>    std::weak_ptr&lt;<span class="hljs-type">int</span>&gt; sp3;<br><br>    std::cout &lt;&lt; <span class="hljs-string">&quot;sp0 size: &quot;</span> &lt;&lt; <span class="hljs-built_in">sizeof</span>(sp0) &lt;&lt; std::endl;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;sp1 size: &quot;</span> &lt;&lt; <span class="hljs-built_in">sizeof</span>(sp1) &lt;&lt; std::endl;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;sp2 size: &quot;</span> &lt;&lt; <span class="hljs-built_in">sizeof</span>(sp2) &lt;&lt; std::endl;<br>    std::cout &lt;&lt; <span class="hljs-string">&quot;sp3 size: &quot;</span> &lt;&lt; <span class="hljs-built_in">sizeof</span>(sp3) &lt;&lt; std::endl;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>Visual Studio 2019 运行结果：</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/../imgs/sp1.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>gcc&#x2F;g++ 运行结果：</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/../imgs/sp2.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>在 32 位机器上，<strong>std_unique_ptr</strong> 占 4 字节，<strong>std::shared_ptr</strong> 和 <strong>std::weak_ptr</strong> 占 8 字节；在 64 位机器上，<strong>std_unique_ptr</strong> 占 8 字节，<strong>std::shared_ptr</strong> 和 <strong>std::weak_ptr</strong> 占 16 字节。也就是说，<strong>std_unique_ptr</strong> 的大小总是和原始指针大小一样，<strong>std::shared_ptr</strong> 和 <strong>std::weak_ptr</strong> 大小是原始指针的一倍。</p>
 <h4 id="智能指针使用注意事项"><a href="#智能指针使用注意事项" class="headerlink" title="智能指针使用注意事项"></a>智能指针使用注意事项</h4><p>C++ 新标准提倡的理念之一是不应该再手动调用 delete 或者 free 函数去释放内存了，而应该把它们交给新标准提供的各种智能指针对象。C++ 新标准中的各种智能指针是如此的实用与强大，在现代 C++ 项目开发中，读者应该尽量去使用它们。智能指针虽然好用，但稍不注意，也可能存在许多难以发现的 bug，这里我根据经验总结了几条：</p>
 <ul>
@@ -559,9 +559,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E5%90%88%E6%A0%BC%E7%9A%84CC++%E5%BC%80%E5%8F%91%E8%80%85%EF%BC%9F/" title="【转载】如何成为一名合格的CC++开发者？">
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3CC++%E4%B8%AD%E7%9A%84%E6%8C%87%E9%92%88/" title="【转载】深入理解CC++中的指针">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【转载】如何成为一名合格的CC++开发者？</span>
+                        <span class="hidden-mobile">【转载】深入理解CC++中的指针</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -569,8 +569,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3CC++%E4%B8%AD%E7%9A%84%E6%8C%87%E9%92%88/" title="【转载】深入理解CC++中的指针">
-                        <span class="hidden-mobile">【转载】深入理解CC++中的指针</span>
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E4%B8%AD%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%BB%8F%E9%AA%8C%E6%BC%AB%E8%B0%88/" title="【转载】服务器开发中网络数据分析与故障排查经验漫谈">
+                        <span class="hidden-mobile">【转载】服务器开发中网络数据分析与故障排查经验漫谈</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

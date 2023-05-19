@@ -23,9 +23,9 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="libevent源码深度剖析08集成信号处理 现在我们已经了解了libevent的基本框架：事件管理框架和事件主循环。上节提到了libevent中I&#x2F;O事件和Signal以及Timer事件的集成，这一节将分析如何将Signal集成到事件主循环的框架中。 1. 集成策略——使用socket pair前一节已经做了足够多的介绍了，基本方法就是采用“消息机制”。在libevent中这是通过so">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent6.webp">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent7.webp">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent8.webp">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:22.352Z">
 <meta property="article:author" content="阿木大叔">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="libevent">
 <meta property="article:tag" content="源码解析">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/imgs/libevent6.webp">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -289,7 +289,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：23 分钟前
+                    本文最后更新于：38 分钟前
                   
                 
               </p>
@@ -300,15 +300,15 @@
                 <h1 id="libevent源码深度剖析08"><a href="#libevent源码深度剖析08" class="headerlink" title="libevent源码深度剖析08"></a>libevent源码深度剖析08</h1><p><strong>集成信号处理</strong></p>
 <p>现在我们已经了解了libevent的基本框架：事件管理框架和事件主循环。上节提到了libevent中I&#x2F;O事件和Signal以及Timer事件的集成，这一节将分析如何将<strong>Signal</strong>集成到事件主循环的框架中。</p>
 <h3 id="1-集成策略——使用socket-pair"><a href="#1-集成策略——使用socket-pair" class="headerlink" title="1. 集成策略——使用socket pair"></a>1. 集成策略——使用socket pair</h3><p>前一节已经做了足够多的介绍了，基本方法就是采用“消息机制”。在libevent中这是通过socket pair完成的，下面就来详细分析一下。<br>Socket pair就是一个socket对，包含两个socket，一个读socket，一个写socket。工作方式如下图所示：</p>
-<p> <img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/../imgs/libevent6.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p> <img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>创建一个socket pair并不是复杂的操作，可以参见下面的流程图，清晰起见，其中忽略了一些错误处理和检查。</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/../imgs/libevent7.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>Libevent提供了辅助函数<strong>evutil_socketpair()<strong>来创建一个</strong>socket pair</strong>，可以结合上面的创建流程来分析该函数。</p>
 <h3 id="2-集成到事件主循环——通知event-base"><a href="#2-集成到事件主循环——通知event-base" class="headerlink" title="2. 集成到事件主循环——通知event_base"></a>2. 集成到事件主循环——通知event_base</h3><p>Socket pair创建好了，可是libevent的事件主循环还是不知道Signal是否发生了啊，看来我们还差了最后一步，那就是：为socket pair的读socket在libevent的<strong>event_base</strong>实例上注册一个<strong>persist</strong>的读事件。<br>这样当向写socket写入数据时，读socket就会得到通知，触发读事件，从而event_base就能相应的得到通知了。<br>前面提到过，Libevent会在事件主循环中检查标记，来确定是否有触发的signal，如果标记被设置就处理这些signal，这段代码在各个具体的I&#x2F;O机制中，以Epoll为例，在**epoll_dispatch()**函数中，代码片段如下：</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">res = epoll<span class="hljs-constructor">_wait(<span class="hljs-params">epollop</span>-&gt;<span class="hljs-params">epfd</span>, <span class="hljs-params">events</span>, <span class="hljs-params">epollop</span>-&gt;<span class="hljs-params">nevents</span>, <span class="hljs-params">timeout</span>)</span>;<br>    <span class="hljs-keyword">if</span> (res<span class="hljs-operator"> == </span>-<span class="hljs-number">1</span>) &#123;<br>        <span class="hljs-keyword">if</span> (errno != EINTR) &#123;<br>            event<span class="hljs-constructor">_warn(<span class="hljs-string">&quot;epoll_wait&quot;</span>)</span>;<br>            return <span class="hljs-number">(-1)</span>;<br>        &#125;<br>        evsignal<span class="hljs-constructor">_process(<span class="hljs-params">base</span>)</span>;<span class="hljs-comment">// 处理signal事件</span><br>        return (<span class="hljs-number">0</span>);<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (base-&gt;<span class="hljs-keyword">sig</span>.evsignal_caught) &#123;<br>        evsignal<span class="hljs-constructor">_process(<span class="hljs-params">base</span>)</span>;<span class="hljs-comment">// 处理signal事件</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>完整的处理框架如下所示：</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/../imgs/libevent8.webp" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>注1：libevent中，初始化阶段并不注册读socket的读事件，而是在注册信号阶段才会测试并注册；<br>注2：libevent中，检查I&#x2F;O事件是在各系统I&#x2F;O机制的**dispatch()<strong>函数中完成的，该dispatch()函数在</strong>event_base_loop()**函数中被调用；</p>
 <h3 id="3-evsignal-info结构体"><a href="#3-evsignal-info结构体" class="headerlink" title="3. evsignal_info结构体"></a>3. evsignal_info结构体</h3><p>libevent中Signal事件的管理是通过结构体<strong>evsignal_info</strong>完成的，结构体位于evsignal.h文件中，定义如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">evsignal_info</span> &#123;<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">event</span> ev_signal;<br>    <span class="hljs-type">int</span> ev_signal_pair[<span class="hljs-number">2</span>];<br>    <span class="hljs-type">int</span> ev_signal_added;<br>    <span class="hljs-keyword">volatile</span> <span class="hljs-type">sig_atomic_t</span> evsignal_caught;<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">event_list</span> evsigevents[NSIG];<br>    <span class="hljs-type">sig_atomic_t</span> evsigcaught[NSIG];<br><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> HAVE_SIGACTION</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sigaction</span> **sh_old;<br><span class="hljs-meta">#<span class="hljs-keyword">else</span></span><br>    <span class="hljs-type">ev_sighandler_t</span> **sh_old;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>    <span class="hljs-type">int</span> sh_old_max;<br>&#125;;<br></code></pre></td></tr></table></figure>

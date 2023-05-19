@@ -23,16 +23,16 @@
 <meta property="og:site_name" content="阿木大叔的博客">
 <meta property="og:description" content="非阻塞模式下 send 和 recv 函数的返回值我们来总结一下 send 和 recv 函数的各种返回值意义：    返回值 n 返回值含义    大于 0 成功发送 n 个字节   0 对端关闭连接   小于 0（ -1） 出错或者被信号中断或者对端 TCP 窗口太小数据发不出去（send）或者当前网卡缓冲区已无数据可收（recv）   我们来逐一介绍下这三种情况：  返回值大于 0 对于 s">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/imgs/sendrecvreturnvalue1.png">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==">
-<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/imgs/sendrecvreturnvalue2.png">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/undefined">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/imgs">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
 <meta property="article:modified_time" content="2023-05-19T05:34:22.401Z">
 <meta property="article:author" content="阿木大叔">
 <meta property="article:tag" content="学习资料">
 <meta property="article:tag" content="网络编程">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/imgs/sendrecvreturnvalue1.png">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/imgs">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -288,7 +288,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：23 分钟前
+                    本文最后更新于：38 分钟前
                   
                 
               </p>
@@ -349,14 +349,14 @@
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-number">1</span>tcpdump -i any &#x27;tcp port <span class="hljs-number">3000</span>&#x27;<br></code></pre></td></tr></table></figure>
 
 <p>然后启动 <strong>client</strong> ，我们看下结果：</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/../imgs/sendrecvreturnvalue1.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>客户端确实是每隔 3 秒 <strong>send</strong> 一次数据。此时我们使用 <strong>lsof -i -Pn</strong> 命令查看连接状态，也是正常的：</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/undefined" srcset="/blog/img/loading.gif" lazyload alt="img"></p>
 <p>然后，tcpdump 抓包结果输出中，除了连接时的三次握手数据包，再也无其他数据包，也就是说，<strong>send</strong> 函数发送 <strong>0</strong> 字节数据，<strong>client</strong> 的协议栈并不会把这些数据发出去。</p>
 <figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dns"><span class="hljs-number">1</span>[root@localhost ~]# tcpdump -i any &#x27;tcp port <span class="hljs-number">3000</span>&#x27;<br><span class="hljs-number">2</span>tcpdump: verbose output suppressed, use -v or -vv for full protocol decode<br><span class="hljs-number">3</span>listening on any, link-type LINUX_SLL (Linux cooked), capture size <span class="hljs-number">262144</span> bytes<br><span class="hljs-number">417:37:03</span>.<span class="hljs-number">028449</span> IP localhost.<span class="hljs-number">48820</span> &gt; localhost.hbci: Flags [S], seq <span class="hljs-number">1632283330</span>, win <span class="hljs-number">43690</span>, options [mss <span class="hljs-number">65495</span>,sackOK,TS val <span class="hljs-number">201295556</span> ecr <span class="hljs-number">0</span>,nop,wscale <span class="hljs-number">7</span>], length <span class="hljs-number">0</span><br><span class="hljs-number">517:37:03</span>.<span class="hljs-number">028479</span> IP localhost.hbci &gt; localhost.<span class="hljs-number">48820</span>: Flags [S.], seq <span class="hljs-number">3669336158</span>, ack <span class="hljs-number">1632283331</span>, win <span class="hljs-number">43690</span>, options [mss <span class="hljs-number">65495</span>,sackOK,TS val <span class="hljs-number">201295556</span> ecr <span class="hljs-number">201295556</span>,nop,wscale <span class="hljs-number">7</span>], length <span class="hljs-number">0</span><br><span class="hljs-number">617:37:03</span>.<span class="hljs-number">028488</span> IP localhost.<span class="hljs-number">48820</span> &gt; localhost.hbci: Flags [.], ack <span class="hljs-number">1</span>, win <span class="hljs-number">342</span>, options [nop,nop,TS val <span class="hljs-number">201295556</span> ecr <span class="hljs-number">201295556</span>], length <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
 
 <p>因此，<strong>server</strong> 端也会一直没有输出，如果你用的是 gdb 启动 <strong>server</strong>，此时中断下来会发现，<strong>server</strong> 端由于没有数据会一直阻塞在 <strong>recv</strong> 函数调用处（<strong>55</strong> 行）。</p>
-<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/../imgs/sendrecvreturnvalue2.png" srcset="/blog/img/loading.gif" lazyload></p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/imgs" srcset="/blog/img/loading.gif" lazyload></p>
 <p>上述示例再次验证了，<strong>send</strong> 一个 0 字节的数据没有任何意思，希望读者在实际开发时，避免写出这样的代码。</p>
 
                 
