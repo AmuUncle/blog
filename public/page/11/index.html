@@ -225,15 +225,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
-          【转载】TCP协议如何解决粘包、半包问题
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" target="_self">
+          【转载】bind函数重难点解析
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" target="_self">
         <div>
-          TCP 协议如何解决粘包、半包问题一  TCP 协议是流式协议很多读者从接触网络知识以来，应该听说过这句话：TCP 协议是流式协议。那么这句话到底是什么意思呢？所谓流式协议，即协议的内容是像流水一样的字节流，内容与内容之间没有明确的分界标志，需要我们人为地去给这些协议划分边界。 举个例子，A 与 B 进行 TCP 通信，A 先后给 B 发送了一个 100 字节和 200 字节的数据包，那么 B 是
+          bind 函数重难点解析bind 函数如何选择绑定地址bind 函数的基本用法如下： 123456789struct sockaddr_in bindaddr;bindaddr.sin_family = AF_INET;bindaddr.sin_addr.s_addr = htonl(INADDR_ANY);bindaddr.sin_port = htons(3000);if (bind(list
         </div>
       </a>
 
@@ -288,15 +288,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" target="_self">
-          【转载】bind函数重难点解析
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
+          【转载】TCP协议如何解决粘包、半包问题
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
         <div>
-          bind 函数重难点解析bind 函数如何选择绑定地址bind 函数的基本用法如下： 123456789struct sockaddr_in bindaddr;bindaddr.sin_family = AF_INET;bindaddr.sin_addr.s_addr = htonl(INADDR_ANY);bindaddr.sin_port = htons(3000);if (bind(list
+          TCP 协议如何解决粘包、半包问题一  TCP 协议是流式协议很多读者从接触网络知识以来，应该听说过这句话：TCP 协议是流式协议。那么这句话到底是什么意思呢？所谓流式协议，即协议的内容是像流水一样的字节流，内容与内容之间没有明确的分界标志，需要我们人为地去给这些协议划分边界。 举个例子，A 与 B 进行 TCP 通信，A 先后给 B 发送了一个 100 字节和 200 字节的数据包，那么 B 是
         </div>
       </a>
 
