@@ -24,7 +24,7 @@
 <meta property="og:description" content="libevent源码深度剖析11时间管理 为了支持定时器，libevent必须和系统时间打交道，这一部分的内容也比较简单，主要涉及到时间的加减辅助函数、时间缓存、时间校正和定时器堆的时间值调整等。下面就结合源代码来分析一下。 1. 初始化检测libevent在初始化时会检测系统时间的类型，通过调用函数*d***etect_monotonic()完成，它通过调用clock_gettime()**来检">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
-<meta property="article:modified_time" content="2023-05-13T07:22:36.809Z">
+<meta property="article:modified_time" content="2023-05-19T05:34:22.354Z">
 <meta property="article:author" content="阿木大叔">
 <meta property="article:tag" content="c++">
 <meta property="article:tag" content="libevent">
@@ -285,7 +285,7 @@
               <p class="note note-info">
                 
                   
-                    本文最后更新于：2 天前
+                    本文最后更新于：4 分钟前
                   
                 
               </p>
@@ -405,9 +405,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9009/" title="【转载】libevent源码深度剖析09">
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" title="【转载】libevent源码深度剖析10">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【转载】libevent源码深度剖析09</span>
+                        <span class="hidden-mobile">【转载】libevent源码深度剖析10</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -415,8 +415,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" title="【转载】libevent源码深度剖析10">
-                        <span class="hidden-mobile">【转载】libevent源码深度剖析10</span>
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9012/" title="【转载】libevent源码深度剖析12">
+                        <span class="hidden-mobile">【转载】libevent源码深度剖析12</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
