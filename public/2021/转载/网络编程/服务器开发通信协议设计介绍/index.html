@@ -1,0 +1,746 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/amudashu.png">
+  <link rel="icon" href="/blog/img/amudashu.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="阿木大叔">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="服务器开发通信协议设计介绍 一、选择TCP还是UDP协议由于我们的即时通讯软件的用户存在用户状态问题，即用户登录成功以后可以在他的好友列表中看到哪些好友在线，所以客户端和服务器需要保持长连接状态。另外即时通讯软件一般要求信息准确、有序、完整地到达对端，而这也是TCP协议的特点之一。综合这两个所以这里我们选择TCP协议，而不是UDP协议。 二、协议的结构由于TCP协议是流式协议，所谓流式协议即通讯的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转载】服务器开发通信协议设计介绍">
+<meta property="og:url" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="阿木大叔的博客">
+<meta property="og:description" content="服务器开发通信协议设计介绍 一、选择TCP还是UDP协议由于我们的即时通讯软件的用户存在用户状态问题，即用户登录成功以后可以在他的好友列表中看到哪些好友在线，所以客户端和服务器需要保持长连接状态。另外即时通讯软件一般要求信息准确、有序、完整地到达对端，而这也是TCP协议的特点之一。综合这两个所以这里我们选择TCP协议，而不是UDP协议。 二、协议的结构由于TCP协议是流式协议，所谓流式协议即通讯的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+<meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
+<meta property="article:modified_time" content="2023-05-19T05:34:22.400Z">
+<meta property="article:author" content="阿木大叔">
+<meta property="article:tag" content="学习资料">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【转载】服务器开发通信协议设计介绍 - 阿木大叔的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hudejie.gitee.io","root":"/blog/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blog/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>阿木大叔-博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【转载】服务器开发通信协议设计介绍"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-05-06 17:27" pubdate>
+          2021年5月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          122 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">【转载】服务器开发通信协议设计介绍</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：4 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="服务器开发通信协议设计介绍"><a href="#服务器开发通信协议设计介绍" class="headerlink" title="服务器开发通信协议设计介绍"></a>服务器开发通信协议设计介绍</h2><p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<h2 id="一、选择TCP还是UDP协议"><a href="#一、选择TCP还是UDP协议" class="headerlink" title="一、选择TCP还是UDP协议"></a>一、选择TCP还是UDP协议</h2><p>由于我们的即时通讯软件的用户存在用户状态问题，即用户登录成功以后可以在他的好友列表中看到哪些好友在线，所以客户端和服务器需要保持长连接状态。另外即时通讯软件一般要求信息准确、有序、完整地到达对端，而这也是TCP协议的特点之一。综合这两个所以这里我们选择TCP协议，而不是UDP协议。</p>
+<h2 id="二、协议的结构"><a href="#二、协议的结构" class="headerlink" title="二、协议的结构"></a>二、协议的结构</h2><p>由于TCP协议是流式协议，所谓流式协议即通讯的内容是无边界的字节流：如A给B连续发送了三个数据包，每个包的大小都是100个字节，那么B可能会一次性收到300个字节；也可能先收到100个字节，再收到200个字节；也可能先收到100个字节，再收到50个字节，再收到150个字节；或者先收到50个字节，再收到50个字节，再收到50个字节，最后收到150个字节。也就是说，B可能以任何组合形式收到这300个字节。即像水流一样无明确的边界。为了能让对端知道如何给包分界，目前一般有三种做法：</p>
+<ol>
+<li>以固定大小字节数目来分界，上文所说的就是属于这种类型，如每个包100个字节，对端每收齐100个字节，就当成一个包来解析；</li>
+<li>以特定符号来分界，如每个包都以特定的字符来结尾（如\n），当在字节流中读取到该字符时，则表明上一个包到此为止。</li>
+<li>固定包头+包体结构，这种结构中一般包头部分是一个固定字节长度的结构，并且包头中会有一个特定的字段指定包体的大小。这是目前各种网络应用用的最多的一种包格式。</li>
+</ol>
+<p>上面三种分包方式各有优缺点，方法1和方法2简单易操作，但是缺点也很明显，就是很不灵活，如方法一当包数据不足指定长度，只能使用占位符如0来凑，比较浪费；方法2中包中不能有包界定符，否则就会引起歧义，也就是要求包内容中不能有某些特殊符号。而方法3虽然解决了方法1和方法2的缺点，但是操作起来就比较麻烦。我们的即时通讯协议就采用第三种分包方式。所以我们的协议包的包头看起来像这样：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs abnf">struct package_header<br>&#123;<br>    int32_t bodysize<span class="hljs-comment">;</span><br>&#125;<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+<p>一个应用中，有许多的应用数据，拿我们这里的即时通讯来说，有注册、登录、获取好友列表、好友消息等各种各样的协议数据包，而每个包因为业务内容不一样可能数据内容也不一样，所以各个包可能看起来像下面这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">package_header</span><br>&#123;<br>    <span class="hljs-type">int32_t</span> bodysize;<br>&#125;;<br><br><span class="hljs-comment">//登录数据包</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">register_package</span><br>&#123;<br>    package_header header;<br>    <span class="hljs-comment">//命令号</span><br>    <span class="hljs-type">int32_t</span> cmd;<br>    <span class="hljs-comment">//注册用户名</span><br>    <span class="hljs-type">char</span> username[<span class="hljs-number">16</span>];<br>    <span class="hljs-comment">//注册密码</span><br>    <span class="hljs-type">char</span> password[<span class="hljs-number">16</span>];<br>    <span class="hljs-comment">//注册昵称</span><br>    <span class="hljs-type">char</span> nickname[<span class="hljs-number">16</span>];<br>    <span class="hljs-comment">//注册手机号</span><br>    <span class="hljs-type">char</span> mobileno[<span class="hljs-number">16</span>];<br>&#125;;<br><br><span class="hljs-comment">//登录数据包</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">login_package</span><br>&#123;<br>    package_header header;<br>    <span class="hljs-comment">//命令号</span><br>    <span class="hljs-type">int32_t</span> cmd;<br>    <span class="hljs-comment">//登录用户名</span><br>    <span class="hljs-type">char</span> username[<span class="hljs-number">16</span>];<br>    <span class="hljs-comment">//密码</span><br>    <span class="hljs-type">char</span> password[<span class="hljs-number">16</span>];<br>    <span class="hljs-comment">//客户端类型</span><br>    <span class="hljs-type">int32_t</span> clienttype;<br>    <span class="hljs-comment">//上线类型，如在线、隐身、忙碌、离开等</span><br>    <span class="hljs-type">int32_t</span> onlinetype;<br>&#125;;<br><br><span class="hljs-comment">//获取好友列表</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">getfriend_package</span><br>&#123;<br>    package_header header;<br>    <span class="hljs-comment">//命令号</span><br>    <span class="hljs-type">int32_t</span> cmd;<br>&#125;;<br><br><span class="hljs-comment">//聊天内容</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">chat_package</span><br>&#123;<br>    package_header header;<br>    <span class="hljs-comment">//命令号</span><br>    <span class="hljs-type">int32_t</span> cmd;<br>    <span class="hljs-comment">//发送人userid</span><br>    <span class="hljs-type">int32_t</span> senderid;<br>    <span class="hljs-comment">//接收人userid</span><br>    <span class="hljs-type">int32_t</span> targetid;<br>    <span class="hljs-comment">//消息内容</span><br>    <span class="hljs-type">char</span> chatcontent[<span class="hljs-number">8192</span>];<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>看到没有？由于每一个业务的内容不一样，定义的结构体也不一样。如果业务比较多的话，我们需要定义各种各样的这种结构体，这简直是一场噩梦。那么有没有什么方法可以避免这个问题呢？有，我受jdk中的流对象的WriteInt32、WriteByte、WriteInt64、WriteString，这样的接口的启发，也发明了一套这样的协议，而且这套协议基本上是通用协议，可用于任何场景。我们的包还是分为包头和包体两部分，包头和上文所说的一样，包体是一个不固定大小的二进制流，其长度由包头中的指定包体长度的字段决定。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">package_protocol</span><br>&#123;<br>    <span class="hljs-type">int32_t</span> bodysize;<br>    <span class="hljs-comment">//注意：C/C++语法不能这么定义结构体，</span><br>    <span class="hljs-comment">//这里只是为了说明含义的伪代码</span><br>    <span class="hljs-comment">//bodycontent即为一个不固定大小的二进制流</span><br>    <span class="hljs-type">char</span>    binarystream[bodysize];<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>接下来的核心部分就是如何操作这个二进制流，我们将流分为二进制读和二进制写两种流，下面给出接口定义：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-comment">//写</span><br><span class="hljs-keyword">class</span> BinaryWriteStream<br>&#123;<br>public:<br>    <span class="hljs-constructor">BinaryWriteStream(<span class="hljs-params">string</span><span class="hljs-operator">*</span> <span class="hljs-params">data</span>)</span>;<br>    const <span class="hljs-built_in">char</span>* <span class="hljs-constructor">GetData()</span> const;<br>    size_t <span class="hljs-constructor">GetSize()</span> const;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteCString(<span class="hljs-params">const</span> <span class="hljs-params">char</span><span class="hljs-operator">*</span> <span class="hljs-params">str</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">len</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteString(<span class="hljs-params">const</span> <span class="hljs-params">string</span>&amp; <span class="hljs-params">str</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteDouble(<span class="hljs-params">double</span> <span class="hljs-params">value</span>, <span class="hljs-params">bool</span> <span class="hljs-params">isNULL</span> = <span class="hljs-params">false</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteInt64(<span class="hljs-params">int64_t</span> <span class="hljs-params">value</span>, <span class="hljs-params">bool</span> <span class="hljs-params">isNULL</span> = <span class="hljs-params">false</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteInt32(<span class="hljs-params">int32_t</span> <span class="hljs-params">i</span>, <span class="hljs-params">bool</span> <span class="hljs-params">isNULL</span> = <span class="hljs-params">false</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteShort(<span class="hljs-params">short</span> <span class="hljs-params">i</span>, <span class="hljs-params">bool</span> <span class="hljs-params">isNULL</span> = <span class="hljs-params">false</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">WriteChar(<span class="hljs-params">char</span> <span class="hljs-params">c</span>, <span class="hljs-params">bool</span> <span class="hljs-params">isNULL</span> = <span class="hljs-params">false</span>)</span>;<br>    size_t <span class="hljs-constructor">GetCurrentPos()</span> const&#123; return m_data-&gt;length<span class="hljs-literal">()</span>; &#125;<br>    void <span class="hljs-constructor">Flush()</span>;<br>    void <span class="hljs-constructor">Clear()</span>;<br><span class="hljs-keyword">private</span>:<br>    <span class="hljs-built_in">string</span>* m_data;<br>&#125;;<br><span class="hljs-comment">//读</span><br><span class="hljs-keyword">class</span> BinaryReadStream : public IReadStream<br>&#123;<br><span class="hljs-keyword">private</span>:<br>    const <span class="hljs-built_in">char</span>* const ptr;<br>    const size_t      len;<br>    const <span class="hljs-built_in">char</span>*       cur;<br>    <span class="hljs-constructor">BinaryReadStream(<span class="hljs-params">const</span> BinaryReadStream&amp;)</span>;<br>    BinaryReadStream&amp; operator=(const BinaryReadStream&amp;);<br>public:<br>    <span class="hljs-constructor">BinaryReadStream(<span class="hljs-params">const</span> <span class="hljs-params">char</span><span class="hljs-operator">*</span> <span class="hljs-params">ptr</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">len</span>)</span>;<br>    const <span class="hljs-built_in">char</span>* <span class="hljs-constructor">GetData()</span> const;<br>    size_t <span class="hljs-constructor">GetSize()</span> const;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">IsEmpty()</span> const;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadString(<span class="hljs-params">string</span><span class="hljs-operator">*</span> <span class="hljs-params">str</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">maxlen</span>, <span class="hljs-params">size_t</span>&amp; <span class="hljs-params">outlen</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadCString(<span class="hljs-params">char</span><span class="hljs-operator">*</span> <span class="hljs-params">str</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">strlen</span>, <span class="hljs-params">size_t</span>&amp; <span class="hljs-params">len</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadCCString(<span class="hljs-params">const</span> <span class="hljs-params">char</span><span class="hljs-operator">**</span> <span class="hljs-params">str</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">maxlen</span>, <span class="hljs-params">size_t</span>&amp; <span class="hljs-params">outlen</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadInt32(<span class="hljs-params">int32_t</span>&amp; <span class="hljs-params">i</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadInt64(<span class="hljs-params">int64_t</span>&amp; <span class="hljs-params">i</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadShort(<span class="hljs-params">short</span>&amp; <span class="hljs-params">i</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadChar(<span class="hljs-params">char</span>&amp; <span class="hljs-params">c</span>)</span>;<br>    size_t <span class="hljs-constructor">ReadAll(<span class="hljs-params">char</span><span class="hljs-operator">*</span> <span class="hljs-params">szBuffer</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">iLen</span>)</span> const;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">IsEnd()</span> const;<br>    const <span class="hljs-built_in">char</span>* <span class="hljs-constructor">GetCurrent()</span> const&#123; return cur; &#125;<br>public:<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadLength(<span class="hljs-params">size_t</span> &amp; <span class="hljs-params">len</span>)</span>;<br>    <span class="hljs-built_in">bool</span> <span class="hljs-constructor">ReadLengthWithoutOffset(<span class="hljs-params">size_t</span> &amp;<span class="hljs-params">headlen</span>, <span class="hljs-params">size_t</span> &amp; <span class="hljs-params">outlen</span>)</span>;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>这样如果是上文的一个登录数据包，我们只要写成如下形式就可以了：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">std::<span class="hljs-built_in">string</span> outbuf;<br>BinaryWriteStream stream(&amp;outbuf);<br>stream.<span class="hljs-constructor">WriteInt32(<span class="hljs-params">cmd</span>)</span>;<br>stream.<span class="hljs-constructor">WriteCString(<span class="hljs-params">username</span>, 16)</span>;<br>stream.<span class="hljs-constructor">WriteCString(<span class="hljs-params">password</span>, 16)</span>;<br>stream.<span class="hljs-constructor">WriteInt32(<span class="hljs-params">clienttype</span>)</span>;<br>stream.<span class="hljs-constructor">WriteInt32(<span class="hljs-params">onlinetype</span>)</span>;<br><span class="hljs-comment">//最终数据就存储到outbuf中去了</span><br>stream.<span class="hljs-constructor">Flush()</span>;<br></code></pre></td></tr></table></figure>
+
+<p>接着我们再对端，解得正确的包体后，我们只要按写入的顺序依次读出来即可：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">BinaryWriteStream stream(outbuf.c<span class="hljs-constructor">_str()</span>, outbuf.length<span class="hljs-literal">()</span>);<br>int32_t cmd;<br>stream.<span class="hljs-constructor">WriteInt32(<span class="hljs-params">cmd</span>)</span>;<br><span class="hljs-built_in">char</span> username<span class="hljs-literal">[<span class="hljs-number">16</span>]</span>;<br>stream.<span class="hljs-constructor">ReadCString(<span class="hljs-params">username</span>, 16, NULL)</span>;<br><span class="hljs-built_in">char</span> password<span class="hljs-literal">[<span class="hljs-number">16</span>]</span>;<br>stream.<span class="hljs-constructor">WriteCString(<span class="hljs-params">password</span>, 16, NULL)</span>;<br>int32_t clienttype;<br>stream.<span class="hljs-constructor">WriteInt32(<span class="hljs-params">clienttype</span>)</span>;<br>int32_t onlinetype;<br>stream.<span class="hljs-constructor">WriteInt32(<span class="hljs-params">onlinetype</span>)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>这里给出BinaryReadStream和BinaryWriteStream的完整实现：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-comment">//计算校验和</span><br><span class="hljs-function"><span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> <span class="hljs-title">checksum</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> *buffer, <span class="hljs-type">int</span> size)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> cksum = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (size &gt; <span class="hljs-number">1</span>)<br>    &#123;<br>        cksum += *buffer++;<br>        size -= <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span>);<br>    &#125;<br>    <span class="hljs-keyword">if</span> (size)<br>    &#123;<br>        cksum += *(<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span>*)buffer;<br>    &#125;<br>    <span class="hljs-comment">//将32位数转换成16</span><br>    <span class="hljs-keyword">while</span> (cksum &gt;&gt; <span class="hljs-number">16</span>)<br>        cksum = (cksum &gt;&gt; <span class="hljs-number">16</span>) + (cksum &amp; <span class="hljs-number">0xffff</span>);<br>    <span class="hljs-keyword">return</span> (<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span>)(~cksum);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">compress_</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> i, <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> &amp;len)</span></span><br><span class="hljs-function"></span>&#123;<br>    len = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> a = <span class="hljs-number">4</span>; a &gt;= <span class="hljs-number">0</span>; a--)<br>    &#123;<br>        <span class="hljs-type">char</span> c;<br>        c = i &gt;&gt; (a * <span class="hljs-number">7</span>) &amp; <span class="hljs-number">0x7f</span>;<br>        <span class="hljs-keyword">if</span> (c == <span class="hljs-number">0x00</span> &amp;&amp; len == <span class="hljs-number">0</span>)<br>            <span class="hljs-keyword">continue</span>;<br>        <span class="hljs-keyword">if</span> (a == <span class="hljs-number">0</span>)<br>            c &amp;= <span class="hljs-number">0x7f</span>;<br>        <span class="hljs-keyword">else</span><br>            c |= <span class="hljs-number">0x80</span>;<br>        buf[len] = c;<br>        len++;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (len == <span class="hljs-number">0</span>)<br>    &#123;<br>        len++;<br>        buf[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>    &#125;<br>    <span class="hljs-comment">//cout &lt;&lt; &quot;compress:&quot; &lt;&lt; i &lt;&lt; endl;</span><br>    <span class="hljs-comment">//cout &lt;&lt; &quot;compress len:&quot; &lt;&lt; len &lt;&lt; endl;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">uncompress_</span><span class="hljs-params">(<span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> len, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> &amp;i)</span></span><br><span class="hljs-function"></span>&#123;<br>    i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> index = <span class="hljs-number">0</span>; index &lt; (<span class="hljs-type">int</span>)len; index++)<br>    &#123;<br>        <span class="hljs-type">char</span> c = *(buf + index);<br>        i = i &lt;&lt; <span class="hljs-number">7</span>;<br>        c &amp;= <span class="hljs-number">0x7f</span>;<br>        i |= c;<br>    &#125;<br>    <span class="hljs-comment">//cout &lt;&lt; &quot;uncompress:&quot; &lt;&lt; i &lt;&lt; endl;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br>BinaryReadStream::<span class="hljs-built_in">BinaryReadStream</span>(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* ptr_, <span class="hljs-type">size_t</span> len_)<br>    : <span class="hljs-built_in">ptr</span>(ptr_), <span class="hljs-built_in">len</span>(len_), <span class="hljs-built_in">cur</span>(ptr_)<br>&#123;<br>    cur += BINARY_PACKLEN_LEN_2 + CHECKSUM_LEN;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::IsEmpty</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> len &lt;= BINARY_PACKLEN_LEN_2;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">BinaryReadStream::GetSize</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> len;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadCString</span><span class="hljs-params">(<span class="hljs-type">char</span>* str, <span class="hljs-type">size_t</span> strlen, <span class="hljs-comment">/* out */</span> <span class="hljs-type">size_t</span>&amp; outlen)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">size_t</span> fieldlen;<br>    <span class="hljs-type">size_t</span> headlen;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">ReadLengthWithoutOffset</span>(headlen, fieldlen)) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">// user buffer is not enough</span><br>    <span class="hljs-keyword">if</span> (fieldlen &gt; strlen) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">// 偏移到数据的位置</span><br>    <span class="hljs-comment">//cur += BINARY_PACKLEN_LEN_2;    </span><br>    cur += headlen;<br>    <span class="hljs-keyword">if</span> (cur + fieldlen &gt; ptr + len)<br>    &#123;<br>        outlen = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-built_in">memcpy</span>(str, cur, fieldlen);<br>    outlen = fieldlen;<br>    cur += outlen;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadString</span><span class="hljs-params">(string* str, <span class="hljs-type">size_t</span> maxlen, <span class="hljs-type">size_t</span>&amp; outlen)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">size_t</span> headlen;<br>    <span class="hljs-type">size_t</span> fieldlen;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">ReadLengthWithoutOffset</span>(headlen, fieldlen)) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">// user buffer is not enough</span><br>    <span class="hljs-keyword">if</span> (maxlen != <span class="hljs-number">0</span> &amp;&amp; fieldlen &gt; maxlen) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">// 偏移到数据的位置</span><br>    <span class="hljs-comment">//cur += BINARY_PACKLEN_LEN_2;    </span><br>    cur += headlen;<br>    <span class="hljs-keyword">if</span> (cur + fieldlen &gt; ptr + len)<br>    &#123;<br>        outlen = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    str-&gt;<span class="hljs-built_in">assign</span>(cur, fieldlen);<br>    outlen = fieldlen;<br>    cur += outlen;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadCCString</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>** str, <span class="hljs-type">size_t</span> maxlen, <span class="hljs-type">size_t</span>&amp; outlen)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">size_t</span> headlen;<br>    <span class="hljs-type">size_t</span> fieldlen;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">ReadLengthWithoutOffset</span>(headlen, fieldlen)) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">// user buffer is not enough</span><br>    <span class="hljs-keyword">if</span> (maxlen != <span class="hljs-number">0</span> &amp;&amp; fieldlen &gt; maxlen) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">// 偏移到数据的位置</span><br>    <span class="hljs-comment">//cur += BINARY_PACKLEN_LEN_2;    </span><br>    cur += headlen;<br>    <span class="hljs-comment">//memcpy(str, cur, fieldlen);</span><br>    <span class="hljs-keyword">if</span> (cur + fieldlen &gt; ptr + len)<br>    &#123;<br>        outlen = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    *str = cur;<br>    outlen = fieldlen;<br>    cur += outlen;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadInt32</span><span class="hljs-params">(<span class="hljs-type">int32_t</span>&amp; i)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> VALUE_SIZE = <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">int32_t</span>);<br>    <span class="hljs-keyword">if</span> (cur + VALUE_SIZE &gt; ptr + len)<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-built_in">memcpy</span>(&amp;i, cur, VALUE_SIZE);<br>    i = <span class="hljs-built_in">ntohl</span>(i);<br>    cur += VALUE_SIZE;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadInt64</span><span class="hljs-params">(<span class="hljs-type">int64_t</span>&amp; i)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span> int64str[<span class="hljs-number">128</span>];<br>    <span class="hljs-type">size_t</span> length;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">ReadCString</span>(int64str, <span class="hljs-number">128</span>, length))<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    i = <span class="hljs-built_in">atoll</span>(int64str);<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadShort</span><span class="hljs-params">(<span class="hljs-type">short</span>&amp; i)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> VALUE_SIZE = <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">short</span>);<br>    <span class="hljs-keyword">if</span> (cur + VALUE_SIZE &gt; ptr + len) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-built_in">memcpy</span>(&amp;i, cur, VALUE_SIZE);<br>    i = <span class="hljs-built_in">ntohs</span>(i);<br>    cur += VALUE_SIZE;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadChar</span><span class="hljs-params">(<span class="hljs-type">char</span>&amp; c)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">const</span> <span class="hljs-type">int</span> VALUE_SIZE = <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">char</span>);<br>    <span class="hljs-keyword">if</span> (cur + VALUE_SIZE &gt; ptr + len) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-built_in">memcpy</span>(&amp;c, cur, VALUE_SIZE);<br>    cur += VALUE_SIZE;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadLength</span><span class="hljs-params">(<span class="hljs-type">size_t</span> &amp; outlen)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">size_t</span> headlen;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">ReadLengthWithoutOffset</span>(headlen, outlen)) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>    <span class="hljs-comment">//cur += BINARY_PACKLEN_LEN_2;</span><br>    cur += headlen;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::ReadLengthWithoutOffset</span><span class="hljs-params">(<span class="hljs-type">size_t</span>&amp; headlen, <span class="hljs-type">size_t</span> &amp; outlen)</span></span><br><span class="hljs-function"></span>&#123;<br>    headlen = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">const</span> <span class="hljs-type">char</span> *temp = cur;<br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">5</span>];<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i = <span class="hljs-number">0</span>; i&lt;<span class="hljs-built_in">sizeof</span>(buf); i++)<br>    &#123;<br>        <span class="hljs-built_in">memcpy</span>(buf + i, temp, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">char</span>));<br>        temp++;<br>        headlen++;<br>        <span class="hljs-comment">//if ((buf[i] &gt;&gt; 7 | 0x0) == 0x0)</span><br>        <span class="hljs-keyword">if</span> ((buf[i] &amp; <span class="hljs-number">0x80</span>) == <span class="hljs-number">0x00</span>)<br>            <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (cur + headlen &gt; ptr + len)<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> value;<br>    <span class="hljs-built_in">uncompress_</span>(buf, headlen, value);<br>    outlen = value;<br>    <span class="hljs-comment">/*if ( cur + BINARY_PACKLEN_LEN_2 &gt; ptr + len ) &#123;</span><br><span class="hljs-comment">    return false;</span><br><span class="hljs-comment">    &#125;</span><br><span class="hljs-comment">    unsigned int tmp;</span><br><span class="hljs-comment">    memcpy(&amp;tmp, cur, sizeof(tmp));</span><br><span class="hljs-comment">    outlen = ntohl(tmp);*/</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryReadStream::IsEnd</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">assert</span>(cur &lt;= ptr + len);<br>    <span class="hljs-keyword">return</span> cur == ptr + len;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">const</span> <span class="hljs-type">char</span>* <span class="hljs-title">BinaryReadStream::GetData</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> ptr;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">BinaryReadStream::ReadAll</span><span class="hljs-params">(<span class="hljs-type">char</span> * szBuffer, <span class="hljs-type">size_t</span> iLen)</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">size_t</span> iRealLen = <span class="hljs-built_in">min</span>(iLen, len);<br>    <span class="hljs-built_in">memcpy</span>(szBuffer, ptr, iRealLen);<br>    <span class="hljs-keyword">return</span> iRealLen;<br>&#125;<br><br><span class="hljs-comment">//=================class BinaryWriteStream implementation============//</span><br>BinaryWriteStream::<span class="hljs-built_in">BinaryWriteStream</span>(string *data) :<br>    <span class="hljs-built_in">m_data</span>(data)<br>&#123;<br>    m_data-&gt;<span class="hljs-built_in">clear</span>();<br>    <span class="hljs-type">char</span> str[BINARY_PACKLEN_LEN_2 + CHECKSUM_LEN];<br>    m_data-&gt;<span class="hljs-built_in">append</span>(str, <span class="hljs-built_in">sizeof</span>(str));<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteCString</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* str, <span class="hljs-type">size_t</span> len)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">5</span>];<br>    <span class="hljs-type">size_t</span> buflen;<br>    <span class="hljs-built_in">compress_</span>(len, buf, buflen);<br>    m_data-&gt;<span class="hljs-built_in">append</span>(buf, <span class="hljs-built_in">sizeof</span>(<span class="hljs-type">char</span>)*buflen);<br>    m_data-&gt;<span class="hljs-built_in">append</span>(str, len);<br>    <span class="hljs-comment">//unsigned int ulen = htonl(len);</span><br>    <span class="hljs-comment">//m_data-&gt;append((char*)&amp;ulen,sizeof(ulen));</span><br>    <span class="hljs-comment">//m_data-&gt;append(str,len);</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteString</span><span class="hljs-params">(<span class="hljs-type">const</span> string&amp; str)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">WriteCString</span>(str.<span class="hljs-built_in">c_str</span>(), str.<span class="hljs-built_in">length</span>());<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">const</span> <span class="hljs-type">char</span>* <span class="hljs-title">BinaryWriteStream::GetData</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> m_data-&gt;<span class="hljs-built_in">data</span>();<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">BinaryWriteStream::GetSize</span><span class="hljs-params">()</span> <span class="hljs-type">const</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">return</span> m_data-&gt;<span class="hljs-built_in">length</span>();<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteInt32</span><span class="hljs-params">(<span class="hljs-type">int32_t</span> i, <span class="hljs-type">bool</span> isNULL)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int32_t</span> i2 = <span class="hljs-number">999999999</span>;<br>    <span class="hljs-keyword">if</span> (isNULL == <span class="hljs-literal">false</span>)<br>        i2 = <span class="hljs-built_in">htonl</span>(i);<br>    m_data-&gt;<span class="hljs-built_in">append</span>((<span class="hljs-type">char</span>*)&amp;i2, <span class="hljs-built_in">sizeof</span>(i2));<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteInt64</span><span class="hljs-params">(<span class="hljs-type">int64_t</span> value, <span class="hljs-type">bool</span> isNULL)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span> int64str[<span class="hljs-number">128</span>];<br>    <span class="hljs-keyword">if</span> (isNULL == <span class="hljs-literal">false</span>)<br>    &#123;<br>    <span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> _WIN32</span><br>        <span class="hljs-built_in">sprintf</span>(int64str, <span class="hljs-string">&quot;%ld&quot;</span>, value);<br>    <span class="hljs-meta">#<span class="hljs-keyword">else</span></span><br>        <span class="hljs-built_in">sprintf</span>(int64str, <span class="hljs-string">&quot;%lld&quot;</span>, value);<br>    <span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>        <span class="hljs-built_in">WriteCString</span>(int64str, <span class="hljs-built_in">strlen</span>(int64str));<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-built_in">WriteCString</span>(int64str, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteShort</span><span class="hljs-params">(<span class="hljs-type">short</span> i, <span class="hljs-type">bool</span> isNULL)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">short</span> i2 = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">if</span> (isNULL == <span class="hljs-literal">false</span>)<br>        i2 = <span class="hljs-built_in">htons</span>(i);<br>    m_data-&gt;<span class="hljs-built_in">append</span>((<span class="hljs-type">char</span>*)&amp;i2, <span class="hljs-built_in">sizeof</span>(i2));<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteChar</span><span class="hljs-params">(<span class="hljs-type">char</span> c, <span class="hljs-type">bool</span> isNULL)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span> c2 = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">if</span> (isNULL == <span class="hljs-literal">false</span>)<br>        c2 = c;<br>    (*m_data) += c2;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">BinaryWriteStream::WriteDouble</span><span class="hljs-params">(<span class="hljs-type">double</span> value, <span class="hljs-type">bool</span> isNULL)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span>   doublestr[<span class="hljs-number">128</span>];<br>    <span class="hljs-keyword">if</span> (isNULL == <span class="hljs-literal">false</span>)<br>    &#123;<br>        <span class="hljs-built_in">sprintf</span>(doublestr, <span class="hljs-string">&quot;%f&quot;</span>, value);<br>        <span class="hljs-built_in">WriteCString</span>(doublestr, <span class="hljs-built_in">strlen</span>(doublestr));<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-built_in">WriteCString</span>(doublestr, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">BinaryWriteStream::Flush</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">char</span> *ptr = &amp;(*m_data)[<span class="hljs-number">0</span>];<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> ulen = <span class="hljs-built_in">htonl</span>(m_data-&gt;<span class="hljs-built_in">length</span>());<br>    <span class="hljs-built_in">memcpy</span>(ptr, &amp;ulen, <span class="hljs-built_in">sizeof</span>(ulen));<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">BinaryWriteStream::Clear</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    m_data-&gt;<span class="hljs-built_in">clear</span>();<br>    <span class="hljs-type">char</span> str[BINARY_PACKLEN_LEN_2 + CHECKSUM_LEN];<br>    m_data-&gt;<span class="hljs-built_in">append</span>(str, <span class="hljs-built_in">sizeof</span>(str));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里详细解释一下上面的实现原理，即如何把各种类型的字段写入这种所谓的流中，或者怎么从这种流中读出各种类型的数据。上文的字段在流中的格式如下图：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>这里最简便的方式就是每个字段的长度域都是固定字节数目，如4个字节。但是这里我们并没有这么做，而是使用了一个小小技巧去对字段长度进行了一点压缩。对于字符串类型的字段，我们将表示其字段长度域的整型值（int32类型，4字节）按照其数值的大小压缩成1～5个字节，对于每一个字节，如果我们只用其低7位。最高位为标志位，为1时，表示其左边的还有下一个字节，反之到此结束。例如，对于数字127，我们二进制表示成01111111，由于最高位是0，那么如果字段长度是127及以下，一个字节就可以存储下了。如果一个字段长度大于127，如等于256，对应二进制100000000，那么我们按照刚才的规则，先填充最低字节（从左往右依次是从低到高），由于最低的7位放不下，还有后续高位字节，所以我们在最低字节的最高位上填1，即10000000，接着次高位为00000100，由于次高位后面没有更高位的字节了，所以其最高位为0，组合起来两个字节就是10000000 0000100。对于数字50000，其二进制是1100001101010000，根据每7个一拆的原则是：11 0000110 1010000再加上标志位就是：10000011 10000110 01010000。采用这样一种策略将原来占4个字节的整型值根据数值大小压缩成了1～5个字节（由于我们对数据包最大长度有限制，所以不会出现长度需要占5个字节的情形）。反过来，解析每个字段的长度，就是先取出一个字节，看其最高位是否有标志位，如果有继续取下一个字节当字段长度的一部分继续解析，直到遇到某个字节最高位不为1为止。</p>
+<p>对一个整形压缩和解压缩的部分从上面的代码中摘录如下：</p>
+<p>压缩：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-attribute">1</span>    //将一个四字节的整形数值压缩成<span class="hljs-number">1</span>~<span class="hljs-number">5</span>个字节<br> <span class="hljs-attribute">2</span>    bool compress_(unsigned int i, char *buf, size_t &amp;len)<br> <span class="hljs-attribute">3</span>    &#123;<br> <span class="hljs-attribute">4</span>        len = <span class="hljs-number">0</span>;<br> <span class="hljs-attribute">5</span>        for (int a = <span class="hljs-number">4</span>; a &gt;= <span class="hljs-number">0</span>; a--)<br> <span class="hljs-attribute">6</span>        &#123;<br> <span class="hljs-attribute">7</span>            char c;<br> <span class="hljs-attribute">8</span>            c = i &gt;&gt; (a * <span class="hljs-number">7</span>) &amp; <span class="hljs-number">0</span>x7f;<br> <span class="hljs-attribute">9</span>            if (c == <span class="hljs-number">0</span>x00 &amp;&amp; len == <span class="hljs-number">0</span>)<br><span class="hljs-attribute">10</span>                continue;<br><span class="hljs-attribute">11</span>            if (a == <span class="hljs-number">0</span>)<br><span class="hljs-attribute">12</span>                c &amp;= <span class="hljs-number">0</span>x7f;<br><span class="hljs-attribute">13</span>            else<br><span class="hljs-attribute">14</span>                c |= <span class="hljs-number">0</span>x80;<br><span class="hljs-attribute">15</span>            buf[len] = c;<br><span class="hljs-attribute">16</span>            len++;<br><span class="hljs-attribute">17</span>        &#125;<br><span class="hljs-attribute">18</span>        if (len == <span class="hljs-number">0</span>)<br><span class="hljs-attribute">19</span>        &#123;<br><span class="hljs-attribute">20</span>            len++;<br><span class="hljs-attribute">21</span>            buf[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br><span class="hljs-attribute">22</span>        &#125;<br><span class="hljs-attribute">23</span>        //cout &lt;&lt; <span class="hljs-string">&quot;compress:&quot;</span> &lt;&lt; i &lt;&lt; endl;<br><span class="hljs-attribute">24</span>        //cout &lt;&lt; <span class="hljs-string">&quot;compress len:&quot;</span> &lt;&lt; len &lt;&lt; endl;<br><span class="hljs-attribute">25</span>        return true;<br><span class="hljs-attribute">26</span>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>解压</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"> <span class="hljs-number">1</span>    <span class="hljs-comment">//将一个1~5个字节的值还原成四字节的整形值</span><br> <span class="hljs-number">2</span>    <span class="hljs-built_in">bool</span> uncompress<span class="hljs-constructor">_(<span class="hljs-params">char</span> <span class="hljs-operator">*</span><span class="hljs-params">buf</span>, <span class="hljs-params">size_t</span> <span class="hljs-params">len</span>, <span class="hljs-params">unsigned</span> <span class="hljs-params">int</span> &amp;<span class="hljs-params">i</span>)</span><br> <span class="hljs-number">3</span>    &#123;<br> <span class="hljs-number">4</span>        i = <span class="hljs-number">0</span>;<br> <span class="hljs-number">5</span>        <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> index = <span class="hljs-number">0</span>; index &lt; (<span class="hljs-built_in">int</span>)len; index++)<br> <span class="hljs-number">6</span>        &#123;<br> <span class="hljs-number">7</span>            <span class="hljs-built_in">char</span> c = *(buf + index);<br> <span class="hljs-number">8</span>            i = i &lt;&lt; <span class="hljs-number">7</span>;<br> <span class="hljs-number">9</span>            c &amp;= <span class="hljs-number">0x7f</span>;<br><span class="hljs-number">10</span>            i <span class="hljs-pattern-match">|= c;</span><br><span class="hljs-pattern-match">11        &#125;</span><br><span class="hljs-pattern-match">12        <span class="hljs-operator">/</span><span class="hljs-operator">/</span>cout &lt;&lt; &quot;uncompress:&quot; &lt;&lt; i &lt;&lt; endl;</span><br><span class="hljs-pattern-match">13        return <span class="hljs-literal">true</span>;</span><br><span class="hljs-pattern-match">14    &#125;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、关于跨系统与跨语言之间的网络通信协议解析与识别问题"><a href="#三、关于跨系统与跨语言之间的网络通信协议解析与识别问题" class="headerlink" title="三、关于跨系统与跨语言之间的网络通信协议解析与识别问题"></a>三、关于跨系统与跨语言之间的网络通信协议解析与识别问题</h2><p>由于我们的即时通讯同时涉及到Java和C++两种编程语言，且有windows、linux、安卓三个平台，而我们为了保障学习的质量和效果，所以我们不用第三跨平台库（其实我们也是在学习如何编写这些跨平台库的原理），所以我们需要学习以下如何在Java语言中去解析C++的网络数据包或者反过来。安卓端发送的数据使用Java语言编写，pc与服务器发送的数据使用C++编写，这里以在Java中解析C++网络数据包为例。 这对于很多人来说是一件很困难的事情，所以只能变着法子使用第三方的库。其实只要你掌握了一定的基础知识，利用一些现成的字节流抓包工具（如tcpdump、wireshark）很容易解决这个问题。我们这里使用tcpdump工具来尝试分析和解决这个问题。<br>首先，我们需要明确字节序列这样一个概念，即我们说的大端编码(big endian)和小端编码(little endian)，x86和x64系列的cpu使用小端编码，而数据在网络上传输，以及Java语言中，使用的是大端编码。那么这是什么意思呢？<br>我们举个例子，看一个x64机器上的32位数值在内存中的存储方式：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>i在内存中的地址序列是0x003CF7C4~0x003CF7C8，值为40 e2 01 00。</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>十六进制0001e240正好等于10进制123456，也就是说小端编码中权重高的的字节值存储在内存地址高（地址值较大）的位置，权重值低的字节值存储在内存地址低（地址值较小）的位置，也就是所谓的高高低低。<br>相反，大端编码的规则应该是高低低高，也就是说权值高字节存储在内存地址低的位置，权值低的字节存储在内存地址高的位置。<br>所以，如果我们一个C++程序的int32值123456不作转换地传给Java程序，那么Java按照大端编码的形式读出来的值是：十六进制40E20100 &#x3D; 十进制1088553216。<br>所以，我们要么在发送方将数据转换成网络字节序（大端编码），要么在接收端再进行转换。</p>
+<p>下面看一下如果C++端传送一个如下数据结构，Java端该如何解析（由于Java中是没有指针的，也无法操作内存地址，导致很多人无从下手），下面利用tcpdump来解决这个问题的思路。<br>我们客户端发送的数据包：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>其结构体定义如下：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>利用tcpdump抓到的包如下：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>放大一点：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1%E4%BB%8B%E7%BB%8D/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>我们白色标识出来就是我们收到的数据包。这里我想说明两点：</p>
+<ul>
+<li><p>如果我们知道发送端发送的字节流，再比照接收端收到的字节流，我们就能检测数据包的完整性，或者利用这个来排查一些问题；</p>
+</li>
+<li><p>对于Java程序只要按照这个顺序，先利用java.net.Socket的输出流java.io.DataOutputStream对象readByte、readInt32、readInt32、readBytes、readBytes方法依次读出一个char、int32、int32、16个字节的字节数组、63个字节数组即可，为了还原像int32这样的整形值，我们需要做一些小端编码向大端编码的转换。</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+      
+        <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">#网络编程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【转载】服务器开发通信协议设计介绍</div>
+      <div>https://hudejie.gitee.io/blog/2021/转载/网络编程/服务器开发通信协议设计介绍/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>阿木大叔</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年5月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/socket%E7%9A%84%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F/" title="【转载】socket的阻塞模式和非阻塞模式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【转载】socket的阻塞模式和非阻塞模式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/Reactor%E6%A8%A1%E5%BC%8F/" title="【转载】Reactor模式">
+                        <span class="hidden-mobile">【转载】Reactor模式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://gitee.com/hudejie" target="_blank" rel="nofollow noopener"><span>Gitee</span></a> <i class="iconfont icon-love"></i> <a href="https://blog.csdn.net/qq_25549309?type=blog" target="_blank" rel="nofollow noopener"><span>CSDN</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
