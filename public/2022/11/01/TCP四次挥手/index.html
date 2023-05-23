@@ -239,7 +239,7 @@
         
         
         
-          21 分钟
+          20 分钟
         
       </span>
     
@@ -378,14 +378,13 @@
 <td>Acknowledge number(确认号码)</td>
 </tr>
 </tbody></table>
-<h3 id="TCP四次挥手具体过程如下："><a href="#TCP四次挥手具体过程如下：" class="headerlink" title="TCP四次挥手具体过程如下："></a>TCP四次挥手具体过程如下：</h3><pre><code class=" mermaid">sequenceDiagram
+<h3 id="TCP四次挥手具体过程如下："><a href="#TCP四次挥手具体过程如下：" class="headerlink" title="TCP四次挥手具体过程如下："></a>TCP四次挥手具体过程如下：</h3><pre class="mermaid">sequenceDiagram
     participant Client
     participant Server
-    Client-&gt;&gt;Server: FIN,Seq=x,Ack=y
-    Server--&gt;&gt;Client: ACK,Ack=y+1,Seq=z
-    Server-&gt;&gt;Client: FIN,Seq=w,Ack=y+1
-    Client--&gt;&gt;Server: ACK,Ack=w+1,Seq=x+1
-</code></pre>
+    Client->>Server: FIN,Seq=x,Ack=y
+    Server-->>Client: ACK,Ack=y+1,Seq=z
+    Server->>Client: FIN,Seq=w,Ack=y+1
+    Client-->>Server: ACK,Ack=w+1,Seq=x+1</pre>
 
 <h4 id="第一次握手："><a href="#第一次握手：" class="headerlink" title="第一次握手："></a>第一次握手：</h4><ul>
 <li>客户端：客户端向服务器端发起连接请求将报文中的 SYN 字段置为 1，生成随机序号 x，seq&#x3D;x</li>
@@ -617,6 +616,19 @@
 
   
 
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
 
 
 

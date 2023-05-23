@@ -117,6 +117,9 @@ Fluid.plugins = {
       if ($pre.find('code.mermaid').length > 0) {
         return;
       }
+      if ($pre[0].className === 'mermaid') {
+        return;
+      }
       if ($pre.find('span.line').length > 0) {
         return;
       }

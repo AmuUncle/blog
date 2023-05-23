@@ -355,15 +355,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" target="_self">
-          【转载】libevent源码深度剖析10
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/" target="_self">
+          【转载】libevent源码深度剖析08
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9008/" target="_self">
         <div>
-          libevent源码深度剖析10支持I&#x2F;O多路复用技术 libevent的核心是事件驱动、同步非阻塞，为了达到这一目标，必须采用系统提供的I&#x2F;O多路复用技术，而这些在Windows、Linux、Unix等不同平台上却各有不同，如何能提供优雅而统一的支持方式，是首要关键的问题，这其实不难，本节就来分析一下。 1. 统一的关键libevent支持多种I&#x2F;O多路复用技术的关
+          libevent源码深度剖析08集成信号处理 现在我们已经了解了libevent的基本框架：事件管理框架和事件主循环。上节提到了libevent中I&#x2F;O事件和Signal以及Timer事件的集成，这一节将分析如何将Signal集成到事件主循环的框架中。 1. 集成策略——使用socket pair前一节已经做了足够多的介绍了，基本方法就是采用“消息机制”。在libevent中这是通过so
         </div>
       </a>
 
@@ -420,15 +420,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
-          【转载】libevent源码深度剖析13
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" target="_self">
+          【转载】libevent源码深度剖析10
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9010/" target="_self">
         <div>
-          libevent源码深度剖析13libevent信号处理注意点 前面讲到了 libevent 实现多线程的方法，然而在多线程的环境中注册信号事件，还是有一些情况需要小心处理，那就是不能在多个 libevent 实例上注册信号事件。依然冠名追加到 libevent 系列。 以 2 个线程为例，做简单的场景分析。 1 首先是创建并初始化线程 1 的 libevent 实例 base1 ，线程 1 的
+          libevent源码深度剖析10支持I&#x2F;O多路复用技术 libevent的核心是事件驱动、同步非阻塞，为了达到这一目标，必须采用系统提供的I&#x2F;O多路复用技术，而这些在Windows、Linux、Unix等不同平台上却各有不同，如何能提供优雅而统一的支持方式，是首要关键的问题，这其实不难，本节就来分析一下。 1. 统一的关键libevent支持多种I&#x2F;O多路复用技术的关
         </div>
       </a>
 
@@ -559,6 +559,71 @@
       <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9012/" target="_self">
         <div>
           libevent源码深度剖析12让libevent支持多线程 libevent本身不是多线程安全的，在多核的时代，如何能充分利用CPU的能力呢，这一节来说说如何在多线程环境中使用libevent，跟源代码并没有太大的关系，纯粹是使用上的技巧。 1. 错误使用示例在多核的CPU上只使用一个线程始终是对不起CPU的处理能力啊，那好吧，那就多创建几个线程，比如下面的简单服务器场景。1 主线程创建工作线程
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-06 17:27" pubdate>
+              2021-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/libevent/">#libevent</a>
+            
+              <a href="/blog/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">#源码解析</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
+          【转载】libevent源码深度剖析13
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/libevent/libevent%E6%BA%90%E7%A0%81%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%9013/" target="_self">
+        <div>
+          libevent源码深度剖析13libevent信号处理注意点 前面讲到了 libevent 实现多线程的方法，然而在多线程的环境中注册信号事件，还是有一些情况需要小心处理，那就是不能在多个 libevent 实例上注册信号事件。依然冠名追加到 libevent 系列。 以 2 个线程为例，做简单的场景分析。 1 首先是创建并初始化线程 1 的 libevent 实例 base1 ，线程 1 的
         </div>
       </a>
 
@@ -746,67 +811,6 @@
       <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E4%BB%8E%E6%8A%93%E5%8C%85%E7%9A%84%E8%A7%92%E5%BA%A6%E5%88%86%E6%9E%90connect%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B/" target="_self">
         <div>
           从抓包的角度分析connect()函数的连接过程这篇文章主要是从tcp连接建立的角度来分析客户端程序如何利用connect函数和服务端程序建立tcp连接的，了解connect函数在建立连接的过程中底层协议栈做了哪些事情。 tcp三次握手在正式介绍connect函数时，我们先来看一下tcp三次握手的过程，下面这个实验是客户端通过telnet远程登录服务端的例子，telnet协议是基于tcp协议，我们
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-05-06 17:27" pubdate>
-              2021-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E5%81%9AJava%E6%88%96%E8%80%85C++%E5%BC%80%E5%8F%91%E9%83%BD%E5%BA%94%E8%AF%A5%E7%9F%A5%E9%81%93%E7%9A%84lsof%E5%91%BD%E4%BB%A4/" target="_self">
-          【转载】做Java或者C++开发都应该知道的lsof命令
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E5%81%9AJava%E6%88%96%E8%80%85C++%E5%BC%80%E5%8F%91%E9%83%BD%E5%BA%94%E8%AF%A5%E7%9F%A5%E9%81%93%E7%9A%84lsof%E5%91%BD%E4%BB%A4/" target="_self">
-        <div>
-          做 Java 或者 C++ 开发都应该知道的 lsof 命令lsof 命令是 Linux 系统的扩展工具，它的含义是 list opened filedesciptor （列出已经打开的文件描述符），在 Linux 系统中，所有的与资源句柄相关的东西都可以统一抽象成文件描述符（filedescriptor，简称 fd）。一个文件句柄是一个 fd，一个 socket 对象也可以称之为 fd 等等。
         </div>
       </a>
 
