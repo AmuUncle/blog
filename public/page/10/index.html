@@ -225,13 +225,265 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%AE%9E%E4%BE%8B%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D/" target="_self">
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/" target="_self">
+          【转载】非阻塞模式下send和recv函数的返回值
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%E6%A8%A1%E5%BC%8F%E4%B8%8Bsend%E5%92%8Crecv%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E%E5%80%BC/" target="_self">
+        <div>
+          非阻塞模式下 send 和 recv 函数的返回值我们来总结一下 send 和 recv 函数的各种返回值意义：    返回值 n 返回值含义    大于 0 成功发送 n 个字节   0 对端关闭连接   小于 0（ -1） 出错或者被信号中断或者对端 TCP 窗口太小数据发不出去（send）或者当前网卡缓冲区已无数据可收（recv）   我们来逐一介绍下这三种情况：  返回值大于 0 对于 s
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-06 17:27" pubdate>
+              2021-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+            
+              <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">#网络编程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%B8%80%E5%AE%9A%E8%A6%81%E5%8D%95%E7%8B%AC%E5%BC%80%E7%BA%BF%E7%A8%8B%E5%90%97/" target="_self">
+          【转载】业务数据处理一定要单独开线程吗
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%B8%80%E5%AE%9A%E8%A6%81%E5%8D%95%E7%8B%AC%E5%BC%80%E7%BA%BF%E7%A8%8B%E5%90%97/" target="_self">
+        <div>
+          业务数据处理一定要单独开线程吗在 《one thread one loop 思想》一文我们介绍了一个 loop 的主要结构一般如下所示： 12345678while (!m_bQuitFlag)&#123;	epoll_or_select_func();	handle_io_events();	handle_other_things();&#125;  对于一些业务逻辑处理比较简单、不会太耗时的应
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-06 17:27" pubdate>
+              2021-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/">#高性能服务器框架设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E4%B8%BB%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%B7%A5%E4%BD%9C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%88%86%E5%B7%A5/" target="_self">
+          【转载】主线程与工作线程的分工
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E4%B8%BB%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%B7%A5%E4%BD%9C%E7%BA%BF%E7%A8%8B%E7%9A%84%E5%88%86%E5%B7%A5/" target="_self">
+        <div>
+          主线程与工作线程的分工服务器端为了能流畅处理多个客户端链接，一般在某个线程A里面accept新的客户端连接并生成新连接的socket fd，然后将这些新连接的socketfd给另外开的数个工作线程B1、B2、B3、B4，这些工作线程处理这些新连接上的网络IO事件（即收发数据），同时，还处理系统中的另外一些事务。这里我们将线程A称为主线程，B1、B2、B3、B4等称为工作线程。工作线程的代码框架一般
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-06 17:27" pubdate>
+              2021-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/">#高性能服务器框架设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E6%96%AD%E7%BA%BF%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BF%9E%E6%9C%BA%E5%88%B6/" target="_self">
+          【转载】如何设计断线自动重连机制
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%E6%96%AD%E7%BA%BF%E8%87%AA%E5%8A%A8%E9%87%8D%E8%BF%9E%E6%9C%BA%E5%88%B6/" target="_self">
+        <div>
+          如何设计断线自动重连机制在有连接依赖关系的服务与服务之间，或客户端与服务器之间，无论是出于方便使用、降低运维成本、提高工作效率（服务与服务之间），还是优化用户体验（客户端与服务器之间）自动重连机制通常都是一个非常重要的功能。  情景一  对于一组服务之间，如果其中一些服务（主动连接方，下文以 A 代称）需要与另外一些服务（被连接方，下文以 B 代称）建立 TCP 长连接，如果 A 没有自动连接 B
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-06 17:27" pubdate>
+              2021-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/c/">#c++</a>
+            
+              <a href="/blog/tags/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/">#高性能服务器框架设计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%AE%9E%E4%BE%8B%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D/" target="_self">
           【转载】实例：一个服务器程序的架构介绍
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%AE%9E%E4%BE%8B%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%AE%9E%E4%BE%8B%EF%BC%9A%E4%B8%80%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9E%B6%E6%9E%84%E4%BB%8B%E7%BB%8D/" target="_self">
         <div>
           实例：一个服务器程序的架构介绍本文将介绍我曾经做过的一个项目的服务器架构和服务器编程的一些重要细节。 一、程序运行环境操作系统：Centos 7.0 编译器：gcc&#x2F;g++ 4.8.3、cmake 2.8.11 mysql数据库：5.5.47 项目代码管理工具：Visual Studio 2013 一、程序结构该程序总共有 17 个线程，其中分为 9 个数据库工作线程 D 和一个日志线程
         </div>
@@ -288,13 +540,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%BF%83%E8%B7%B3%E5%8C%85%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1%E8%AF%A6%E8%A7%A3/" target="_self">
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%BF%83%E8%B7%B3%E5%8C%85%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1%E8%AF%A6%E8%A7%A3/" target="_self">
           【转载】心跳包机制设计详解
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%BF%83%E8%B7%B3%E5%8C%85%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1%E8%AF%A6%E8%A7%A3/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E5%BF%83%E8%B7%B3%E5%8C%85%E6%9C%BA%E5%88%B6%E8%AE%BE%E8%AE%A1%E8%AF%A6%E8%A7%A3/" target="_self">
         <div>
           心跳包机制设计详解存在下面两种情形： 情形一：一个客户端连接服务器以后，如果长期没有和服务器有数据来往，可能会被防火墙程序关闭连接，有时候我们并不想要被关闭连接。例如，对于一个即时通讯软件，如果服务器没有消息时，我们确实不会和服务器有任何数据交换，但是如果连接被关闭了，有新消息来时，我们再也没法收到了，这就违背了“即时通讯”的设计要求。 情形二：通常情况下，服务器与某个客户端一般不是位于同一个网络
         </div>
@@ -351,13 +603,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%94%99%E8%AF%AF%E7%A0%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1/" target="_self">
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%94%99%E8%AF%AF%E7%A0%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1/" target="_self">
           【转载】错误码系统的设计
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%94%99%E8%AF%AF%E7%A0%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A1%86%E6%9E%B6%E8%AE%BE%E8%AE%A1/%E9%94%99%E8%AF%AF%E7%A0%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1/" target="_self">
         <div>
           错误码系统的设计 本文介绍服务器开发中一组服务中错误码系统的设计理念与实践，如果读者从来没想过或者没接触过这种设计理念，建议认真体会一下这种设计思路的优点。  错误码的作用读者如果有使用过中国电信的宽带账号上网的经历，如果我们登陆不成功，一般服务器会返回一个错误码，如651、678。然后，我们打中国电信的客服电话，客服会询问我们错误码是多少，通过错误码他们的技术人员就大致知道了错误原因；并且通过错
         </div>
@@ -414,13 +666,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/" target="_self">
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/" target="_self">
           【转载】你一定要搞明白的C函数调用方式与栈原理
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E4%BD%A0%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%9E%E6%98%8E%E7%99%BD%E7%9A%84C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%8E%E6%A0%88%E5%8E%9F%E7%90%86/" target="_self">
         <div>
           你一定要搞明白的C函数调用方式与栈原理写在前面的话 这绝对不是标题党。而是C&#x2F;C++开发中你必须要掌握的基础知识，也是高级技术岗位面试中高频题。我真的真的真的希望无论是学生还是广大C&#x2F;C++开发者，都该掌握此文中介绍的知识。 正文 这篇blog试图讲明当一个c函数被调用时，一个**栈帧(stack frame)**是如何被建立，又如何被消除的。这些细节跟操作系统平台及编译器的实
         </div>
@@ -477,13 +729,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E5%90%88%E6%A0%BC%E7%9A%84CC++%E5%BC%80%E5%8F%91%E8%80%85%EF%BC%9F/" target="_self">
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E5%90%88%E6%A0%BC%E7%9A%84CC++%E5%BC%80%E5%8F%91%E8%80%85%EF%BC%9F/" target="_self">
           【转载】如何成为一名合格的CC++开发者？
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E5%90%88%E6%A0%BC%E7%9A%84CC++%E5%BC%80%E5%8F%91%E8%80%85%EF%BC%9F/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E4%B8%80%E5%90%8D%E5%90%88%E6%A0%BC%E7%9A%84CC++%E5%BC%80%E5%8F%91%E8%80%85%EF%BC%9F/" target="_self">
         <div>
           如何成为一名合格的 C&#x2F;C++ 开发者？写在前面的话在大多数开发或者准开发人员的认识中，C&#x2F;C++ 是一门非常难的编程语言，很多人知道它的强大，但因为认为“难”造成的恐惧让很多人放弃。 笔者从学生时代开始接触 C&#x2F;C++，工作以后先后担任过 C++ 客户端和服务器的开发经理并带队开发，至今已经有十多年了。虽然时至今日哪种编程语言对我来说已经不再重要（我目前主要从事 J
         </div>
@@ -540,13 +792,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3CC++%E4%B8%AD%E7%9A%84%E6%8C%87%E9%92%88/" target="_self">
+        <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3CC++%E4%B8%AD%E7%9A%84%E6%8C%87%E9%92%88/" target="_self">
           【转载】深入理解CC++中的指针
         </a>
       </h1>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3CC++%E4%B8%AD%E7%9A%84%E6%8C%87%E9%92%88/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/cpp/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3CC++%E4%B8%AD%E7%9A%84%E6%8C%87%E9%92%88/" target="_self">
         <div>
           深入理解C&#x2F;C++中的指针C和C++中最强大的功能莫过于指针了（pointer），但是对于大多数人尤其是新手来说，指针是一个最容易出错、也最难掌握的概念了。本文将从指针的方方面面来讲述指针的概念和用法，希望对大家有所帮助。 内存模型为了更好地理解指针，让我们来看一下计算机的内存模型。 内存分为物理内存和虚拟内存，物理内存对应计算机中的内存条，虚拟内存是操作系统内存管理系统假象出来的。由于
         </div>
@@ -590,256 +842,6 @@
               <a href="/blog/tags/c/">#c++</a>
             
               <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" target="_self">
-          【转载】详解C++11中的智能指针
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/cpp/%E8%AF%A6%E8%A7%A3C++11%E4%B8%AD%E7%9A%84%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" target="_self">
-        <div>
-          详解 C++ 11 中的智能指针C&#x2F;C++ 语言最为人所诟病的特性之一就是存在内存泄露问题，因此后来的大多数语言都提供了内置内存分配与释放功能，有的甚至干脆对语言的使用者屏蔽了内存指针这一概念。这里不置贬褒，手动分配内存与手动释放内存有利也有弊，自动分配内存和自动释放内存亦如此，这是两种不同的设计哲学。有人认为，内存如此重要的东西怎么能放心交给用户去管理呢？而另外一些人则认为，内存如此重
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-05-06 17:27" pubdate>
-              2021-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/c/">#c++</a>
-            
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E4%B8%AD%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%BB%8F%E9%AA%8C%E6%BC%AB%E8%B0%88/" target="_self">
-          【转载】服务器开发中网络数据分析与故障排查经验漫谈
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E4%B8%AD%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%BB%8F%E9%AA%8C%E6%BC%AB%E8%B0%88/" target="_self">
-        <div>
-          服务器开发中网络数据分析与故障排查经验漫谈​       一、 操作系统提供的网络接口 为了能更好的排查网络通信问题，我们需要熟悉操作系统提供的以下网络接口函数，列表如下：    接口函数名称 接口函数描述 接口函数签名    socket 创建套接字 int socket(int domain, int type, int  protocol);   connect 连接一个服务器地址 int
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-05-06 17:27" pubdate>
-              2021-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
-          【转载】TCP协议如何解决粘包、半包问题
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/" target="_self">
-        <div>
-          TCP 协议如何解决粘包、半包问题一  TCP 协议是流式协议很多读者从接触网络知识以来，应该听说过这句话：TCP 协议是流式协议。那么这句话到底是什么意思呢？所谓流式协议，即协议的内容是像流水一样的字节流，内容与内容之间没有明确的分界标志，需要我们人为地去给这些协议划分边界。 举个例子，A 与 B 进行 TCP 通信，A 先后给 B 发送了一个 100 字节和 200 字节的数据包，那么 B 是
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-05-06 17:27" pubdate>
-              2021-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
-            
-              <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">#网络编程</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" target="_self">
-          【转载】bind函数重难点解析
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/blog/2021/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" target="_self">
-        <div>
-          bind 函数重难点解析bind 函数如何选择绑定地址bind 函数的基本用法如下： 123456789struct sockaddr_in bindaddr;bindaddr.sin_family = AF_INET;bindaddr.sin_addr.s_addr = htonl(INADDR_ANY);bindaddr.sin_port = htons(3000);if (bind(list
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-05-06 17:27" pubdate>
-              2021-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
-            
-              <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">#网络编程</a>
             
           </div>
         
