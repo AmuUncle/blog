@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/amudashu.png">
+  <link rel="icon" href="/blog/img/amudashu.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="阿木大叔">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="TCP 协议如何解决粘包、半包问题一  TCP 协议是流式协议很多读者从接触网络知识以来，应该听说过这句话：TCP 协议是流式协议。那么这句话到底是什么意思呢？所谓流式协议，即协议的内容是像流水一样的字节流，内容与内容之间没有明确的分界标志，需要我们人为地去给这些协议划分边界。 举个例子，A 与 B 进行 TCP 通信，A 先后给 B 发送了一个 100 字节和 200 字节的数据包，那么 B 是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转载】TCP协议如何解决粘包、半包问题">
+<meta property="og:url" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="阿木大叔的博客">
+<meta property="og:description" content="TCP 协议如何解决粘包、半包问题一  TCP 协议是流式协议很多读者从接触网络知识以来，应该听说过这句话：TCP 协议是流式协议。那么这句话到底是什么意思呢？所谓流式协议，即协议的内容是像流水一样的字节流，内容与内容之间没有明确的分界标志，需要我们人为地去给这些协议划分边界。 举个例子，A 与 B 进行 TCP 通信，A 先后给 B 发送了一个 100 字节和 200 字节的数据包，那么 B 是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/imgs">
+<meta property="og:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/imgs">
+<meta property="article:published_time" content="2021-05-06T09:27:48.000Z">
+<meta property="article:modified_time" content="2023-05-19T05:34:22.397Z">
+<meta property="article:author" content="阿木大叔">
+<meta property="article:tag" content="学习资料">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/imgs">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【转载】TCP协议如何解决粘包、半包问题 - 阿木大叔的博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/blog/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/blog/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hudejie.gitee.io","root":"/blog/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/blog/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/blog/js/utils.js" ></script>
+  <script  src="/blog/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/blog/">
+      <strong>阿木大叔-博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/blog/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【转载】TCP协议如何解决粘包、半包问题"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-05-06 17:27" pubdate>
+          2021年5月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          73 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">【转载】TCP协议如何解决粘包、半包问题</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：4 天前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="TCP-协议如何解决粘包、半包问题"><a href="#TCP-协议如何解决粘包、半包问题" class="headerlink" title="TCP 协议如何解决粘包、半包问题"></a>TCP 协议如何解决粘包、半包问题</h1><h2 id="一-TCP-协议是流式协议"><a href="#一-TCP-协议是流式协议" class="headerlink" title="一  TCP 协议是流式协议"></a>一  TCP 协议是流式协议</h2><p>很多读者从接触网络知识以来，应该听说过这句话：TCP 协议是流式协议。那么这句话到底是什么意思呢？所谓流式协议，即协议的内容是像流水一样的字节流，内容与内容之间没有明确的分界标志，需要我们人为地去给这些协议划分边界。</p>
+<p>举个例子，A 与 B 进行 TCP 通信，A 先后给 B 发送了一个 100 字节和 200 字节的数据包，那么 B 是如何收到呢？B 可能先收到 100 字节，再收到 200 字节；也可能先收到 50 字节，再收到 250 字节；或者先收到 100 字节，再收到 100 字节，再收到 200 字节；或者先收到 20 字节，再收到 20 字节，再收到 60 字节，再收到 100 字节，再收到 50 字节，再收到 50 字节……</p>
+<p>不知道读者看出规律没有？规律就是 A 一共给 B 发送了 300 字节，B 可能以一次或者多次任意形式的总数为 300 字节收到。假设 A 给 B 发送的 100 字节和 200 字节分别都是一个数据包，对于发送端 A 来说，这个是可以区分的，但是对于 B 来说，如果不人为规定多长为一个数据包，B 每次是不知道应该把收到的数据中多少字节作为一个有效的数据包的。而规定每次把多少数据当成一个包就是协议格式规范的内容之一。</p>
+<p>经常会有新手写出类似下面这样的代码：</p>
+<p><strong>发送端：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">//...省略创建socket，建立连接等部分不相关的逻辑...</span><br><span class="hljs-type">char</span> buf[] = <span class="hljs-string">&quot;the quick brown fox jumps over a lazy dog.&quot;</span>;<br><span class="hljs-type">int</span> n = <span class="hljs-built_in">send</span>(socket, buf, <span class="hljs-built_in">strlen</span>(buf), <span class="hljs-number">0</span>);<br><span class="hljs-comment">//...省略出错处理逻辑...</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>接收端：</strong></p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs perl">//省略创建<span class="hljs-keyword">socket</span>，建立连接等部分不相关的逻辑...<br>char recvBuf[<span class="hljs-number">50</span>] = &#123; <span class="hljs-number">0</span> &#125;;<br><span class="hljs-keyword">int</span> n = <span class="hljs-keyword">recv</span>(<span class="hljs-keyword">socket</span>, recvBuf, <span class="hljs-number">50</span>, <span class="hljs-number">0</span>);<br><span class="hljs-regexp">//</span>省略出错处理逻辑...<br><span class="hljs-keyword">printf</span>(<span class="hljs-string">&quot;recvBuf: %s&quot;</span>, recvBuf);<br></code></pre></td></tr></table></figure>
+
+<p>为了专注问题本身的讨论，我这里省略掉了建立连接和部分错误处理的逻辑。上述代码中发送端给接收端发送了一串字符”the quick brown fox jumps over a lazy dog.“，接收端收到后将其打印出来。</p>
+<p>类似这样的代码在本机一般会工作的很好，接收端也如期打印出来预料的字符串，但是一放到局域网或者公网环境就出问题了，即接收端可能打印出来字符串并不完整；如果发送端连续多次发送字符串，接收端会打印出来的字符串不完整或出现乱码。不完整的原因很好理解，即对端某次收到的数据小于完整字符串的长度，recvBuf 数组开始被清空成 0，收到部分字符串后，该字符串的末尾仍然是 0，printf 函数寻找以 0 为结束标志的字符结束输出；乱码的原因是如果某次收入的数据不仅包含一个完整的字符串，还包含下一个字符串部分内容，那么 recvBuf 数组将会被填满，printf 函数输出时仍然会寻找以 0 为结束标志的字符结束输出，这样读取的内存就越界了，一直找到为止，而越界后的内存可能是一些不可读字符，显示出来后就乱码了。</p>
+<p>我举这个例子希望你明白 能对TCP 协议是流式协议有一个直观的认识。正因为如此，所以我们需要人为地在发送端和接收端规定每一次的字节流边界，以便接收端知道从什么位置取出多少字节来当成一个数据包去解析，这就是我们设计网络通信协议格式的要做的工作之一。</p>
+<h2 id="二-如何解决粘包问题"><a href="#二-如何解决粘包问题" class="headerlink" title="二 如何解决粘包问题"></a>二 如何解决粘包问题</h2><p>网络通信程序实际开发中，或者技术面试时，面试官通常会问的比较多的一个问题是：网络通信时，如何解决粘包？</p>
+<blockquote>
+<p>有的面试官可能会这么问：网络通信时，如何解决粘包、丢包或者包乱序问题？这个问题其实是面试官在考察面试者的网络基础知识，如果是 TCP 协议，在大多数场景下，是不存在丢包和包乱序问题的，TCP 通信是可靠通信方式，TCP 协议栈通过序列号和包重传确认机制保证数据包的有序和一定被正确发到目的地；如果是 UDP 协议，如果不能接受少量丢包，那就要自己在 UDP 的基础上实现类似 TCP 这种有序和可靠传输机制了（例如 RTP协议、RUDP 协议）。所以，问题拆解后，只剩下如何解决粘包的问题。</p>
+</blockquote>
+<p>先来解释一下什么是<strong>粘包</strong>，所谓粘包就是连续给对端发送两个或者两个以上的数据包，对端在一次收取中可能收到的数据包大于 1 个，大于 1 个，可能是几个（包括一个）包加上某个包的部分，或者干脆就是几个完整的包在一起。当然，也可能收到的数据只是一个包的部分，这种情况一般也叫<strong>半包</strong>。</p>
+<p>无论是半包还是粘包问题，其根源是上文介绍中 TCP 协议是流式数据格式。解决问题的思路还是想办法从收到的数据中把包与包的边界给区分出来。那么如何区分呢？目前主要有三种方法：</p>
+<p><strong>固定包长的数据包</strong></p>
+<p>顾名思义，即每个协议包的长度都是固定的。举个例子，例如我们可以规定每个协议包的大小是 64 个字节，每次收满 64 个字节，就取出来解析（如果不够，就先存起来）。</p>
+<p>这种通信协议的格式简单但灵活性差。如果包内容不足指定的字节数，剩余的空间需要填充特殊的信息，如 \0（如果不填充特殊内容，如何区分包里面的正常内容与填充信息呢？）；如果包内容超过指定字节数，又得分包分片，需要增加额外处理逻辑——在发送端进行分包分片，在接收端重新组装包片（分包和分片内容在接下来会详细介绍）。</p>
+<p><strong>以指定字符（串）为包的结束标志</strong></p>
+<p>这种协议包比较常见，即字节流中遇到特殊的符号值时就认为到一个包的末尾了。例如，我们熟悉的 FTP协议，发邮件的 SMTP 协议，一个命令或者一段数据后面加上”\r\n”（即所谓的 <strong>CRLF</strong>）表示一个包的结束。对端收到后，每遇到一个”\r\n“就把之前的数据当做一个数据包。</p>
+<p>这种协议一般用于一些包含各种命令控制的应用中，其不足之处就是如果协议数据包内容部分需要使用包结束标志字符，就需要对这些字符做转码或者转义操作，以免被接收方错误地当成包结束标志而误解析。</p>
+<p><strong>包头 + 包体格式</strong></p>
+<p>这种格式的包一般分为两部分，即包头和包体，包头是固定大小的，且包头中必须含有一个字段来说明接下来的包体有多大。</p>
+<p>例如：</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs abnf">struct msg_header<br>&#123;<br>  int32_t bodySize<span class="hljs-comment">;</span><br>  int32_t cmd<span class="hljs-comment">;</span><br>&#125;<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+<p>这就是一个典型的包头格式，bodySize 指定了这个包的包体是多大。由于包头大小是固定的（这里是 size(int32_t) + sizeof(int32_t) &#x3D; 8 字节），对端先收取包头大小字节数目（当然，如果不够还是先缓存起来，直到收够为止），然后解析包头，根据包头中指定的包体大小来收取包体，等包体收够了，就组装成一个完整的包来处理。在有些实现中，包头中的 bodySize可能被另外一个叫 packageSize 的字段代替，这个字段的含义是整个包的大小，这个时候，我们只要用 packageSize 减去包头大小（这里是 sizeof(msg_header)）就能算出包体的大小，原理同上。</p>
+<blockquote>
+<p>在使用大多数网络库时，通常你需要根据协议格式自己给数据包分界和解析，一般的网络库不提供这种功能是出于需要支持不同的协议，由于协议的不确定性，因此没法预先提供具体解包代码。当然，这不是绝对的，也有一些网络库提供了这种功能。在 Java Netty 网络框架中，提供了FixedLengthFrameDecoder 类去处理长度是定长的协议包，提供了 DelimiterBasedFrameDecoder 类去处理按特殊字符作为结束符的协议包，提供 ByteToMessageDecoder 去处理自定义格式的协议包（可用来处理包头 + 包体 这种格式的数据包），然而在继承 ByteToMessageDecoder  子类中你需要根据你的协议具体格式重写 decode() 方法来对数据包解包。</p>
+</blockquote>
+<p>这三种包格式，希望读者能在理解其原理和优缺点的基础上深入掌握。</p>
+<h2 id="三-解包与处理"><a href="#三-解包与处理" class="headerlink" title="三 解包与处理"></a>三 解包与处理</h2><p>在理解了前面介绍的数据包的三种格式后，我们来介绍一下针对上述三种格式的数据包技术上应该如何处理。其处理流程都是一样的，这里我们以<strong>包头 + 包体</strong> 这种格式的数据包来说明。处理流程如下：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<p>假设我们的包头格式如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">//强制一字节对齐</span><br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> pack(push, 1)</span><br><span class="hljs-comment">//协议头</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">msg</span><br>&#123;   <br>    <span class="hljs-type">int32_t</span>  bodysize;         <span class="hljs-comment">//包体大小  </span><br>&#125;;<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> pack(pop)</span><br></code></pre></td></tr></table></figure>
+
+<p>那么上面的流程实现代码如下：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-comment">//包最大字节数限制为10M</span><br>#define MAX_PACKAGE_SIZE    <span class="hljs-number">10</span><span class="hljs-operator"> * </span><span class="hljs-number">1024</span><span class="hljs-operator"> * </span><span class="hljs-number">1024</span><br><br>void ChatSession::<span class="hljs-constructor">OnRead(<span class="hljs-params">const</span> <span class="hljs-params">std</span>::<span class="hljs-params">shared_ptr</span>&lt;TcpConnection&gt;&amp; <span class="hljs-params">conn</span>, Buffer<span class="hljs-operator">*</span> <span class="hljs-params">pBuffer</span>, Timestamp <span class="hljs-params">receivTime</span>)</span><br>&#123;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)<br>    &#123;<br>        <span class="hljs-comment">//不够一个包头大小</span><br>        <span class="hljs-keyword">if</span> (pBuffer-&gt;readable<span class="hljs-constructor">Bytes()</span> &lt; (size_t)sizeof(msg))<br>        &#123;<br>            <span class="hljs-comment">//LOGI &lt;&lt; &quot;buffer is not enough for a package header, pBuffer-&gt;readableBytes()=&quot; &lt;&lt; pBuffer-&gt;readableBytes() &lt;&lt; &quot;, sizeof(msg)=&quot; &lt;&lt; sizeof(msg);</span><br>            return;<br>        &#125;<br><br>        <span class="hljs-comment">//取包头信息</span><br>        msg header;<br>        memcpy(&amp;header, pBuffer-&gt;peek<span class="hljs-literal">()</span>, sizeof(msg));<br><br>        <span class="hljs-comment">//包头有错误，立即关闭连接</span><br>        <span class="hljs-keyword">if</span> (header.bodysize &lt;= <span class="hljs-number">0</span><span class="hljs-operator"> || </span>header.bodysize &gt; MAX_PACKAGE_SIZE)<br>        &#123;<br>            <span class="hljs-comment">//客户端发非法数据包，服务器主动关闭之</span><br>            <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;Illegal package, bodysize: %lld, close TcpConnection, client: %s&quot;</span>, <span class="hljs-params">header</span>.<span class="hljs-params">bodysize</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>            conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>            return;<br>        &#125;<br><br>        <span class="hljs-comment">//收到的数据不够一个完整的包</span><br>        <span class="hljs-keyword">if</span> (pBuffer-&gt;readable<span class="hljs-constructor">Bytes()</span> &lt; (size_t)header.bodysize + sizeof(msg))<br>            return;<br><br>        pBuffer-&gt;retrieve(sizeof(msg));<br>        <span class="hljs-comment">//inbuf用来存放当前要处理的包</span><br>        std::<span class="hljs-built_in">string</span> inbuf;<br>        inbuf.append(pBuffer-&gt;peek<span class="hljs-literal">()</span>, header.bodysize);<br>        pBuffer-&gt;retrieve(header.bodysize);          <br>        <span class="hljs-comment">//解包和业务处理</span><br>        <span class="hljs-keyword">if</span> (!<span class="hljs-constructor">Process(<span class="hljs-params">conn</span>, <span class="hljs-params">inbuf</span>.<span class="hljs-params">c_str</span>()</span>, inbuf.length<span class="hljs-literal">()</span>))<br>        &#123;<br>            <span class="hljs-comment">//客户端发非法数据包，服务器主动关闭之</span><br>            <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;Process package error, close TcpConnection, client: %s&quot;</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>            conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>            return;<br>        &#125;              <br>    &#125;<span class="hljs-comment">// end while-loop</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上述流程代码的处理过程和流程图中是一致的，pBuffer 这里是一个自定义的接收缓冲区，这里的代码，已经将收到的数据放入了这个缓冲区，所以判断当前已收取的字节数目只需要使用这个对象的相应方法即可。上述代码有些细节我需要强调一下：</p>
+<ul>
+<li>取包头时，你应该拷贝一份数据包头大小的数据出来，而不是从缓冲区 pBuffer 中直接将数据取出来（即取出来的数据从 pBuffer 中移除），这是因为倘若接下来根据包头中的字段得到包体大小时，如果剩余数据不够一个包体大小，你又得把这个包头数据放回缓冲区。为了避免这种不必要的操作，只有缓冲区数据大小够整个包的大小（代码中：header.bodysize + sizeof(msg)）你才需要把整个包大小的数据从缓冲区移除，这也是这里的 pBuffer-&gt;peek() 方法 peek 单词的含义（中文可以翻译成“瞟一眼”或者“偷窥”）。</li>
+<li>通过包头得到包体大小时，你一定要对 bodysize 的数值进行校验，我这里要求 bodysize 必须大于 0 且不大于 10 * 1024 * 1024（即 10 M）。当然，实际开发中，你可以根据你自己的需求要决定 bodysize 的上下限（包体大小是 0 字节的包在某些业务场景下是允许的）。记住，一定要判断这个上下限，因为假设这是一个非法的客户端发来的数据，其 bodysize 设置了一个比较大的数值，例如 1 * 1024 * 1024 * 1024（即 1 G），你的逻辑会让你一直缓存该客户端发来的数据，那么很快你的服务器内存将会被耗尽，操作系统在检测到你的进程占用内存达到一定阈值时会杀死你的进程，导致服务不能再正常对外服务。如果你检测了 bodysize 字段的是否满足你设置的上下限，对于非法的 bodysize，直接关闭这路连接即可。这也是服务的一种自我保护措施，避免因为非法数据包带来的损失。</li>
+<li>不知道你有没有注意到整个判断包头、包体以及处理包的逻辑放在一个 while 循环里面，这是必要的。如果没有这个 while 循环，当你一次性收到多个包时，你只会处理一个，下次接着处理就需要等到新一批数据来临时再次触发这个逻辑。这样造成的结果就是，对端给你发送了多个请求，你最多只能应答一个，后面的应答得等到对端再次给你发送数据时。这就是对<strong>粘包</strong>逻辑的正确处理。</li>
+</ul>
+<p>以上逻辑和代码是最基本的<strong>粘包和半包处理机制</strong>，也就是所谓的<strong>技术上的解包处理逻辑</strong>（业务上的解包处理逻辑后面章节再介绍）。希望读者能理解他们，在理解了他们的基础之上，我们可以给解包拓展很多功能，例如，我们再给我们的协议包增加一个支持压缩的功能，我们的包头变成下面这个样子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> pack(push, 1)</span><br><span class="hljs-comment">//协议头</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">msg</span><br>&#123;<br>    <span class="hljs-type">char</span>     compressflag;     <span class="hljs-comment">//压缩标志，如果为1，则启用压缩，反之不启用压缩</span><br>    <span class="hljs-type">int32_t</span>  originsize;       <span class="hljs-comment">//包体压缩前大小</span><br>    <span class="hljs-type">int32_t</span>  compresssize;     <span class="hljs-comment">//包体压缩后大小</span><br>    <span class="hljs-type">char</span>     reserved[<span class="hljs-number">16</span>];       <span class="hljs-comment">//保留字段，用于将来拓展</span><br>&#125;;<br><span class="hljs-meta">#<span class="hljs-keyword">pragma</span> pack(pop)</span><br></code></pre></td></tr></table></figure>
+
+<p>修改后的代码如下：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">void ChatSession::<span class="hljs-constructor">OnRead(<span class="hljs-params">const</span> <span class="hljs-params">std</span>::<span class="hljs-params">shared_ptr</span>&lt;TcpConnection&gt;&amp; <span class="hljs-params">conn</span>, Buffer<span class="hljs-operator">*</span> <span class="hljs-params">pBuffer</span>, Timestamp <span class="hljs-params">receivTime</span>)</span><br>&#123;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)<br>    &#123;<br>        <span class="hljs-comment">//不够一个包头大小</span><br>        <span class="hljs-keyword">if</span> (pBuffer-&gt;readable<span class="hljs-constructor">Bytes()</span> &lt; (size_t)sizeof(msg))<br>        &#123;<br>            <span class="hljs-comment">//LOGI &lt;&lt; &quot;buffer is not enough for a package header, pBuffer-&gt;readableBytes()=&quot; &lt;&lt; pBuffer-&gt;readableBytes() &lt;&lt; &quot;, sizeof(msg)=&quot; &lt;&lt; sizeof(msg);</span><br>            return;<br>        &#125;<br><br>        <span class="hljs-comment">//取包头信息</span><br>        msg header;<br>        memcpy(&amp;header, pBuffer-&gt;peek<span class="hljs-literal">()</span>, sizeof(msg));<br><br>        <span class="hljs-comment">//数据包压缩过</span><br>        <span class="hljs-keyword">if</span> (header.compressflag<span class="hljs-operator"> == </span>PACKAGE_COMPRESSED)<br>        &#123;<br>            <span class="hljs-comment">//包头有错误，立即关闭连接</span><br>            <span class="hljs-keyword">if</span> (header.compresssize &lt;= <span class="hljs-number">0</span><span class="hljs-operator"> || </span>header.compresssize &gt; MAX_PACKAGE_SIZE<span class="hljs-operator"> ||</span><br><span class="hljs-operator">                </span>header.originsize &lt;= <span class="hljs-number">0</span><span class="hljs-operator"> || </span>header.originsize &gt; MAX_PACKAGE_SIZE)<br>            &#123;<br>                <span class="hljs-comment">//客户端发非法数据包，服务器主动关闭之</span><br>                <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;Illegal package, compresssize: %lld, originsize: %lld, close TcpConnection, client: %s&quot;</span>,  <span class="hljs-params">header</span>.<span class="hljs-params">compresssize</span>, <span class="hljs-params">header</span>.<span class="hljs-params">originsize</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>                conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>                return;<br>            &#125;<br><br>            <span class="hljs-comment">//收到的数据不够一个完整的包</span><br>            <span class="hljs-keyword">if</span> (pBuffer-&gt;readable<span class="hljs-constructor">Bytes()</span> &lt; (size_t)header.compresssize + sizeof(msg))<br>                return;<br><br>            pBuffer-&gt;retrieve(sizeof(msg));<br>            std::<span class="hljs-built_in">string</span> inbuf;<br>            inbuf.append(pBuffer-&gt;peek<span class="hljs-literal">()</span>, header.compresssize);<br>            pBuffer-&gt;retrieve(header.compresssize);<br>            std::<span class="hljs-built_in">string</span> destbuf;<br>            <span class="hljs-keyword">if</span> (!ZlibUtil::<span class="hljs-constructor">UncompressBuf(<span class="hljs-params">inbuf</span>, <span class="hljs-params">destbuf</span>, <span class="hljs-params">header</span>.<span class="hljs-params">originsize</span>)</span>)<br>            &#123;<br>                <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;uncompress error, client: %s&quot;</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>                conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>                return;<br>            &#125;<br><br>            <span class="hljs-comment">//业务逻辑处理</span><br>            <span class="hljs-keyword">if</span> (!<span class="hljs-constructor">Process(<span class="hljs-params">conn</span>, <span class="hljs-params">destbuf</span>.<span class="hljs-params">c_str</span>()</span>, destbuf.length<span class="hljs-literal">()</span>))<br>            &#123;<br>                <span class="hljs-comment">//客户端发非法数据包，服务器主动关闭之</span><br>                <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;Process error, close TcpConnection, client: %s&quot;</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>                conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>                return;<br>            &#125;<br>        &#125;<br>        <span class="hljs-comment">//数据包未压缩</span><br>        <span class="hljs-keyword">else</span><br>        &#123;<br>            <span class="hljs-comment">//包头有错误，立即关闭连接</span><br>            <span class="hljs-keyword">if</span> (header.originsize &lt;= <span class="hljs-number">0</span><span class="hljs-operator"> || </span>header.originsize &gt; MAX_PACKAGE_SIZE)<br>            &#123;<br>                <span class="hljs-comment">//客户端发非法数据包，服务器主动关闭之</span><br>                <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;Illegal package, compresssize: %lld, originsize: %lld, close TcpConnection, client: %s&quot;</span>, <span class="hljs-params">header</span>.<span class="hljs-params">compresssize</span>, <span class="hljs-params">header</span>.<span class="hljs-params">originsize</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>                conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>                return;<br>            &#125;<br><br>            <span class="hljs-comment">//收到的数据不够一个完整的包</span><br>            <span class="hljs-keyword">if</span> (pBuffer-&gt;readable<span class="hljs-constructor">Bytes()</span> &lt; (size_t)header.originsize + sizeof(msg))<br>                return;<br><br>            pBuffer-&gt;retrieve(sizeof(msg));<br>            std::<span class="hljs-built_in">string</span> inbuf;<br>            inbuf.append(pBuffer-&gt;peek<span class="hljs-literal">()</span>, header.originsize);<br>            pBuffer-&gt;retrieve(header.originsize);<br>            <span class="hljs-comment">//业务逻辑处理</span><br>            <span class="hljs-keyword">if</span> (!<span class="hljs-constructor">Process(<span class="hljs-params">conn</span>, <span class="hljs-params">inbuf</span>.<span class="hljs-params">c_str</span>()</span>, inbuf.length<span class="hljs-literal">()</span>))<br>            &#123;<br>                <span class="hljs-comment">//客户端发非法数据包，服务器主动关闭之</span><br>                <span class="hljs-constructor">LOGE(<span class="hljs-string">&quot;Process error, close TcpConnection, client: %s&quot;</span>, <span class="hljs-params">conn</span>-&gt;<span class="hljs-params">peerAddress</span>()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">IpPort()</span>.c<span class="hljs-constructor">_str()</span>);<br>                conn-&gt;force<span class="hljs-constructor">Close()</span>;<br>                return;<br>            &#125;<br>        &#125;<span class="hljs-comment">// end else</span><br><br>    &#125;<span class="hljs-comment">// end while-loop</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这段代码先根据包头的压缩标志字段判断包体是否有压缩，如果有压缩，则取出包体大小去解压，解压后的数据才是真正的业务数据。整个程序执行流程图如下：</p>
+<p><img src="https://hudejie.gitee.io/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%B2%98%E5%8C%85%E3%80%81%E5%8D%8A%E5%8C%85%E9%97%AE%E9%A2%98/imgs" srcset="/blog/img/loading.gif" lazyload></p>
+<h3 id><a href="#" class="headerlink" title></a></h3>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/blog/categories/%E8%BD%AC%E8%BD%BD/" class="category-chain-item">转载</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/blog/tags/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/">#学习资料</a>
+      
+        <a href="/blog/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">#网络编程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【转载】TCP协议如何解决粘包、半包问题</div>
+      <div>https://hudejie.gitee.io/blog/2021/05/06/转载/网络编程/TCP协议如何解决粘包、半包问题/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>阿木大叔</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年5月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%96%99/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E4%B8%AD%E7%BD%91%E7%BB%9C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E7%BB%8F%E9%AA%8C%E6%BC%AB%E8%B0%88/" title="【转载】服务器开发中网络数据分析与故障排查经验漫谈">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【转载】服务器开发中网络数据分析与故障排查经验漫谈</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2021/05/06/%E8%BD%AC%E8%BD%BD/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/bind%E5%87%BD%E6%95%B0%E9%87%8D%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90/" title="【转载】bind函数重难点解析">
+                        <span class="hidden-mobile">【转载】bind函数重难点解析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://gitee.com/hudejie" target="_blank" rel="nofollow noopener"><span>Gitee</span></a> <i class="iconfont icon-love"></i> <a href="https://blog.csdn.net/qq_25549309?type=blog" target="_blank" rel="nofollow noopener"><span>CSDN</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/events.js" ></script>
+<script  src="/blog/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/blog/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/blog/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/blog/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
